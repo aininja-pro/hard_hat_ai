@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import SignIn from './pages/SignIn'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
+import SiteScribePage from './features/site-scribe/SiteScribePage'
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent/site-scribe"
+            element={
+              <ProtectedRoute>
+                <SiteScribePage />
               </ProtectedRoute>
             }
           />

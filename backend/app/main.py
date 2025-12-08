@@ -3,10 +3,16 @@ Hard Hat AI Pack - FastAPI Backend
 Main application entry point
 """
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.cors import get_cors_config
-from app.routers import health
+from app.routers import health, site_scribe
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -23,7 +29,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(health.router, tags=["health"])
+app.include_router(health.router)
+app.include_router(site_scribe.router)
 
 
 @app.get("/")

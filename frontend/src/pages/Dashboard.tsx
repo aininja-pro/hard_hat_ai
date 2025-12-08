@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
 import { LiabilityModal } from '../components/LiabilityModal'
@@ -47,6 +48,7 @@ const AGENTS = [
 ]
 
 function DashboardContent() {
+  const navigate = useNavigate()
   const { user, signOut } = useAuth()
   const { mode } = useTheme()
   const [liabilityAcknowledged, setLiabilityAcknowledged] = useState(false)
@@ -60,9 +62,13 @@ function DashboardContent() {
   }, [])
 
   const handleAgentClick = (agentId: string) => {
-    // TODO: Navigate to agent workspace
-    console.log(`Opening agent: ${agentId}`)
-    alert(`${agentId} workspace coming soon!`)
+    // Navigate to agent workspace
+    if (agentId === 'site-scribe') {
+      navigate('/agent/site-scribe')
+    } else {
+      // Other agents coming soon
+      alert(`${agentId} workspace coming soon!`)
+    }
   }
 
   return (
