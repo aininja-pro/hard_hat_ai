@@ -1,0 +1,31 @@
+flowchart TD
+    Start[Start] --> Auth[Passwordless Auth]
+    Auth --> Dashboard[Dashboard]
+    Dashboard --> ModeToggle[Select Mode Field or Office]
+    ModeToggle --> AgentSelection[Select AI Agent]
+    AgentSelection --> SiteScribe[Site Scribe]
+    AgentSelection --> Lookahead[Lookahead Builder]
+    AgentSelection --> CodeCommander[Code Spec Commander]
+    AgentSelection --> ContractHawk[Contract Hawk]
+    AgentSelection --> Submittal[Submittal Scrubber]
+    SiteScribe --> ScribeInput[Input Notes or Voice]
+    ScribeInput --> ScribeAPI[POST api site scribe transform]
+    ScribeAPI --> ScribeOutput[Display Email Draft]
+    ScribeOutput --> Export[Export Options]
+    Lookahead --> LookInput[Input Photo or Text]
+    LookInput --> LookAPI[POST api lookahead generate]
+    LookAPI --> LookOutput[Display Schedule Draft]
+    LookOutput --> Export
+    CodeCommander --> CodeInput[Upload PDF and Enter Query]
+    CodeInput --> CodeAPI[POST api code commander query]
+    CodeAPI --> CodeOutput[Display Technical Answer]
+    CodeOutput --> Export
+    ContractHawk --> ContractInput[Upload Contract Document]
+    ContractInput --> ContractAPI[POST api contract hawk analyze]
+    ContractAPI --> ContractOutput[Highlight Liability Clauses]
+    ContractOutput --> Export
+    Submittal --> SubmittalInput[Upload Product Data and Specs]
+    SubmittalInput --> SubmittalAPI[POST api submittal scrubber compare]
+    SubmittalAPI --> SubmittalOutput[Display Comparison Results]
+    SubmittalOutput --> Export
+    Export --> End[End]

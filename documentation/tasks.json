@@ -1,0 +1,344 @@
+[
+  {
+    "id": 1,
+    "title": "Project Setup and Authentication Infrastructure",
+    "status": "pending",
+    "details": "Initialize React PWA with Tailwind CSS, configure service worker for offline capabilities, set up FastAPI backend with Docker containerization. Implement Clerk or Supabase Auth for magic-link authentication with 24-hour session persistence. Configure CORS policies, HTTPS enforcement, and basic security headers. Set up development environment with hot reload and establish CI/CD pipeline with Vercel (frontend) and Railway/Render (backend). Include environment variable configuration for white-label theming support.",
+    "priority": "high",
+    "subtasks": [
+      {
+        "id": 1,
+        "title": "Initialize React PWA with Tailwind CSS and Service Worker",
+        "status": "pending",
+        "details": "Create React app using Create React App or Vite with PWA template. Install and configure Tailwind CSS with PostCSS. Set up service worker for caching strategies, offline fallbacks, and background sync. Configure PWA manifest.json with app icons, theme colors, and display modes. Implement basic app shell architecture with navigation and layout components.",
+        "description": "Set up the foundational React Progressive Web App structure with Tailwind CSS for styling and configure service worker for offline capabilities",
+        "dependencies": [],
+        "testStrategy": "PWA manifest validation using Lighthouse, service worker functionality testing for offline scenarios, cross-browser compatibility testing on mobile devices"
+      },
+      {
+        "id": 2,
+        "title": "Set up FastAPI Backend with Docker Containerization",
+        "status": "pending",
+        "details": "Create FastAPI project with proper folder structure (routers, models, services, config). Set up Dockerfile with multi-stage build for production optimization. Configure docker-compose.yml for local development with hot reload. Implement basic health check endpoints and CORS middleware configuration. Set up environment variable management with Pydantic settings.",
+        "description": "Initialize FastAPI backend server with proper project structure and Docker containerization for consistent deployment",
+        "dependencies": [],
+        "testStrategy": "API health check endpoint testing, Docker container build and run verification, hot reload functionality testing in development mode"
+      },
+      {
+        "id": 3,
+        "title": "Implement Magic-Link Authentication System",
+        "status": "pending",
+        "details": "Choose and integrate either Clerk or Supabase Auth SDK. Configure magic-link email templates and delivery settings. Implement authentication middleware for protected routes. Set up session management with 24-hour persistence using secure HTTP-only cookies or JWT tokens. Create login/logout components and authentication state management in React using Context API or Redux.",
+        "description": "Integrate Clerk or Supabase Auth for passwordless magic-link authentication with 24-hour session persistence",
+        "dependencies": [
+          1,
+          2
+        ],
+        "testStrategy": "Unit tests for auth flows, integration tests for magic-link delivery and session management, session persistence testing across browser restarts"
+      },
+      {
+        "id": 4,
+        "title": "Configure Security Policies and Environment Setup",
+        "status": "pending",
+        "details": "Configure CORS policies for frontend-backend communication. Implement security headers (CSP, HSTS, X-Frame-Options) using FastAPI middleware. Set up HTTPS enforcement and redirect policies. Create environment variable schema for white-label theming (colors, logos, branding). Implement configuration validation and fallback mechanisms for missing environment variables.",
+        "description": "Implement CORS policies, HTTPS enforcement, security headers, and environment variable configuration for white-label theming",
+        "dependencies": [
+          2,
+          3
+        ],
+        "testStrategy": "Security header validation using security scanning tools, CORS policy testing with different origins, environment variable configuration testing"
+      },
+      {
+        "id": 5,
+        "title": "Establish CI/CD Pipeline and Development Environment",
+        "status": "pending",
+        "details": "Configure development environment with hot reload for both frontend and backend. Set up Vercel deployment configuration with environment variables and build settings. Configure Railway or Render for backend deployment with database connections and environment secrets. Implement GitHub Actions or similar CI/CD workflows for automated testing and deployment. Set up staging and production environment configurations.",
+        "description": "Set up development environment with hot reload and establish CI/CD pipeline with Vercel for frontend and Railway/Render for backend deployment",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "testStrategy": "Deployment pipeline testing with staging environment, hot reload functionality verification, automated test execution in CI/CD pipeline"
+      }
+    ],
+    "description": "Set up the foundational project structure with React PWA, FastAPI backend, and implement passwordless magic-link authentication system",
+    "dependencies": [],
+    "testStrategy": "Unit tests for auth flows, integration tests for magic-link delivery and session management, PWA manifest validation, service worker functionality testing, and cross-browser compatibility testing on mobile devices"
+  },
+  {
+    "id": 2,
+    "title": "Core Dashboard and UI Framework",
+    "status": "pending",
+    "details": "Create responsive dashboard with five agent cards featuring icons, titles, and value propositions. Implement Field Mode (dark theme, voice-first UI, large touch targets) and Office Mode (light theme, denser layout) toggle with persistent user preference. Build mandatory liability disclaimer modal with full-screen overlay requiring acknowledgment before each session. Implement white-label theming system supporting configurable logo, product name, primary/accent colors, and favicon via environment variables. Ensure 44px+ touch targets and sufficient color contrast for accessibility.",
+    "priority": "high",
+    "subtasks": [
+      {
+        "id": 1,
+        "title": "Create responsive dashboard layout with agent cards",
+        "status": "pending",
+        "details": "Implement using CSS Grid or Flexbox for responsive layout. Create reusable AgentCard component with props for icon, title, and description. Ensure cards are properly sized and spaced across different screen sizes (mobile, tablet, desktop). Use semantic HTML structure with proper ARIA labels for accessibility.",
+        "description": "Build the main dashboard structure with a responsive grid layout containing five agent cards. Each card should display an icon, title, and value proposition text with proper spacing and hover effects.",
+        "dependencies": [],
+        "testStrategy": "Visual regression testing across different screen sizes, component unit tests for AgentCard props rendering"
+      },
+      {
+        "id": 2,
+        "title": "Implement Field Mode and Office Mode UI themes",
+        "status": "pending",
+        "details": "Define CSS custom properties for theme variables (colors, spacing, font sizes). Create theme context provider and useTheme hook. Implement dark theme with high contrast colors and light theme with professional appearance. Ensure touch targets are minimum 44px in Field Mode. Use CSS-in-JS or CSS modules for theme switching.",
+        "description": "Create two distinct UI themes - Field Mode with dark theme, large touch targets, and voice-first interface elements, and Office Mode with light theme and denser layout for desktop use.",
+        "dependencies": [
+          1
+        ],
+        "testStrategy": "Visual comparison testing between modes, touch target size validation using automated tools, color contrast ratio testing"
+      },
+      {
+        "id": 3,
+        "title": "Build mode toggle with persistent user preference",
+        "status": "pending",
+        "details": "Implement toggle switch component with clear visual indicators for current mode. Use localStorage or sessionStorage to persist user preference. Create preference management service to handle saving/loading theme choice. Ensure toggle is accessible with keyboard navigation and screen reader support.",
+        "description": "Create a toggle component that allows users to switch between Field Mode and Office Mode, with the selected preference persisted in localStorage and automatically applied on subsequent visits.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "User preference persistence testing across browser sessions, accessibility testing with keyboard navigation and screen readers"
+      },
+      {
+        "id": 4,
+        "title": "Create mandatory liability disclaimer modal",
+        "status": "pending",
+        "details": "Create modal component with full-screen backdrop and centered content area. Implement focus trap to prevent tabbing outside modal. Add 'I Acknowledge' button that closes modal and allows app access. Store acknowledgment in sessionStorage to prevent repeated prompts within same session. Ensure modal is accessible with proper ARIA attributes and escape key handling.",
+        "description": "Build a full-screen overlay modal that displays liability disclaimer text and requires user acknowledgment before each session. Modal should block all other interactions until acknowledged.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "Modal behavior testing across devices, focus management validation, session-based acknowledgment persistence testing"
+      },
+      {
+        "id": 5,
+        "title": "Implement white-label theming system with environment variables",
+        "status": "pending",
+        "details": "Define environment variables for LOGO_URL, PRODUCT_NAME, PRIMARY_COLOR, ACCENT_COLOR, and FAVICON_URL. Create theme configuration service that reads these variables and applies them to CSS custom properties. Implement logo replacement in header/navigation. Add favicon injection script. Ensure color customization works with both light and dark themes while maintaining accessibility contrast ratios.",
+        "description": "Create a configurable theming system that allows customization of logo, product name, primary/accent colors, and favicon through environment variables for white-label deployments.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "Theme configuration testing with different environment variable combinations, color contrast validation for custom colors, logo and favicon loading verification"
+      }
+    ],
+    "description": "Build the main dashboard with agent cards, mode toggle, liability disclaimer modal, and white-label theming system",
+    "dependencies": [
+      1
+    ],
+    "testStrategy": "Visual regression testing for both modes, accessibility testing with screen readers, touch target size validation, theme configuration testing, modal behavior testing across devices, and user preference persistence validation"
+  },
+  {
+    "id": 3,
+    "title": "File Processing and Validation System",
+    "status": "pending",
+    "details": "Build client-side validation for PDF files (≤25 MB, ≤100 pages) and images (≤10 MB) with clear error messaging. Implement backend PDF processing using PyMuPDF or pdfplumber with proper error handling and security controls. Add file sanitization, malware scanning considerations, and memory management for large file processing. Implement streaming file upload with progress indicators and cancellation support. Ensure zero data retention by implementing automatic file cleanup after processing.",
+    "priority": "medium",
+    "subtasks": [
+      {
+        "id": 1,
+        "title": "Implement Client-Side File Validation",
+        "status": "pending",
+        "details": "Create JavaScript validation functions to check file types, sizes, and PDF page counts using File API and PDF.js library. Implement immediate feedback with clear error messages for oversized files, unsupported formats, and page limit violations. Add visual indicators for validation status and prevent form submission for invalid files.",
+        "description": "Build comprehensive client-side validation for PDF files (≤25 MB, ≤100 pages) and images (≤10 MB) with user-friendly error messaging and real-time feedback",
+        "dependencies": [],
+        "testStrategy": "Test file size limits, page count validation, unsupported file types, and error message clarity"
+      },
+      {
+        "id": 2,
+        "title": "Implement Streaming File Upload with Progress Tracking",
+        "status": "pending",
+        "details": "Implement XMLHttpRequest or Fetch API with progress events for upload tracking. Add chunked upload support for large files to prevent timeouts. Create progress bar UI component with percentage display and cancellation button. Handle upload interruptions gracefully with retry mechanisms.",
+        "description": "Build streaming file upload system with real-time progress indicators, cancellation support, and chunked upload handling for large files",
+        "dependencies": [
+          1
+        ],
+        "testStrategy": "Test upload progress accuracy, cancellation functionality, large file handling, and network interruption recovery"
+      },
+      {
+        "id": 3,
+        "title": "Build Backend PDF Processing Infrastructure",
+        "status": "pending",
+        "details": "Set up PDF processing pipeline using PyMuPDF for text extraction and page analysis. Implement memory-efficient processing for large files using streaming and pagination. Add comprehensive error handling for corrupted files, processing failures, and resource exhaustion. Configure processing timeouts and resource limits.",
+        "description": "Implement secure backend PDF processing using PyMuPDF or pdfplumber with proper error handling, memory management, and security controls",
+        "dependencies": [],
+        "testStrategy": "Test PDF text extraction accuracy, memory usage monitoring, corrupted file handling, and processing timeout behavior"
+      },
+      {
+        "id": 4,
+        "title": "Implement File Sanitization and Security Controls",
+        "status": "pending",
+        "details": "Implement file type verification using magic numbers and content analysis beyond extension checking. Add file sanitization to remove potentially malicious content like embedded scripts or macros. Integrate with antivirus scanning APIs or implement basic malware detection patterns. Set up sandboxed processing environment and input validation for all file operations.",
+        "description": "Add comprehensive file sanitization, malware scanning considerations, and security controls to prevent malicious file uploads and processing vulnerabilities",
+        "dependencies": [
+          3
+        ],
+        "testStrategy": "Test malicious file detection, file type spoofing prevention, sanitization effectiveness, and security boundary enforcement"
+      },
+      {
+        "id": 5,
+        "title": "Implement Automatic File Cleanup and Data Retention Controls",
+        "status": "pending",
+        "details": "Create automated cleanup jobs using cron or task scheduler to remove processed files after configurable time periods. Implement secure file deletion using multiple overwrites or system-specific secure deletion APIs. Add cleanup logging and monitoring to verify data retention compliance. Create cleanup status endpoints for audit purposes.",
+        "description": "Build automatic file cleanup system to ensure zero data retention with configurable cleanup schedules, secure deletion, and compliance verification",
+        "dependencies": [
+          2,
+          3,
+          4
+        ],
+        "testStrategy": "Test automatic cleanup execution, secure deletion verification, cleanup logging accuracy, and data retention compliance validation"
+      }
+    ],
+    "description": "Implement client-side file validation and backend PDF processing infrastructure with security controls",
+    "dependencies": [
+      1
+    ],
+    "testStrategy": "File size and page limit validation testing, malicious file upload testing, memory usage monitoring during large file processing, upload progress and cancellation testing, and data retention compliance verification"
+  },
+  {
+    "id": 4,
+    "title": "AI Agent Integration and Streaming Infrastructure",
+    "status": "pending",
+    "details": "Implement Anthropic Claude 3.5 Sonnet integration with streaming endpoints for real-time response rendering. Build confidence indicator system (High/Med/Low) based on response analysis. Implement exponential backoff and rate limiting for API calls with proper error handling and user feedback. Add Claude Vision integration for image processing in Lookahead Builder. Implement streaming text rendering with skeleton loaders and chunked updates. Ensure zero data retention by discarding all conversations after streaming completion.",
+    "priority": "high",
+    "subtasks": [
+      {
+        "id": 1,
+        "title": "Implement Claude 3.5 Sonnet API Integration with Rate Limiting",
+        "status": "pending",
+        "details": "Create API client wrapper with proper authentication using Anthropic SDK. Implement exponential backoff strategy starting with 1s delay, doubling up to 60s maximum. Add rate limiting with token bucket algorithm to respect API limits. Include comprehensive error handling for network timeouts, API errors, and quota exceeded scenarios. Set up proper logging for debugging and monitoring API usage patterns.",
+        "description": "Set up the core integration with Anthropic's Claude 3.5 Sonnet API, including authentication, request handling, exponential backoff, and rate limiting mechanisms to ensure reliable API communication.",
+        "dependencies": [],
+        "testStrategy": "Unit tests for API client methods, integration tests with mock API responses, rate limiting behavior validation, and error handling scenario testing"
+      },
+      {
+        "id": 2,
+        "title": "Build Streaming Response Infrastructure",
+        "status": "pending",
+        "details": "Set up Server-Sent Events (SSE) or WebSocket connection for streaming. Implement text chunking algorithm to process streaming tokens and render them progressively. Create skeleton loader components that show during initial response delay. Build text accumulation buffer to handle partial tokens and ensure proper word boundaries. Add streaming state management to track response progress and handle interruptions gracefully.",
+        "description": "Implement real-time streaming response handling from Claude API with chunked text rendering, skeleton loaders, and progressive UI updates for enhanced user experience.",
+        "dependencies": [
+          1
+        ],
+        "testStrategy": "Streaming response simulation tests, UI rendering validation with various response speeds, interruption handling tests, and skeleton loader behavior verification"
+      },
+      {
+        "id": 3,
+        "title": "Develop Confidence Indicator System",
+        "status": "pending",
+        "details": "Implement response analysis algorithm that examines hedge words, uncertainty phrases, and response structure. Create scoring matrix based on factors like response length, specificity, presence of qualifiers, and factual assertions. Map scores to three-tier confidence levels (High: >0.8, Medium: 0.4-0.8, Low: <0.4). Design confidence indicator UI components with appropriate visual cues (colors, icons). Include confidence metadata in streaming responses for real-time updates.",
+        "description": "Create an intelligent confidence scoring system that analyzes Claude's responses and provides High/Medium/Low confidence indicators based on response characteristics and certainty markers.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "Confidence scoring accuracy tests with known response samples, UI indicator display validation, and real-time confidence update testing during streaming"
+      },
+      {
+        "id": 4,
+        "title": "Integrate Claude Vision for Image Processing",
+        "status": "pending",
+        "details": "Extend API client to support Claude Vision endpoints with image upload capabilities. Implement image preprocessing pipeline for format validation, size optimization, and base64 encoding. Create image analysis request builder that combines text prompts with image data. Add image display components in Lookahead Builder interface with drag-and-drop functionality. Integrate vision responses with existing confidence indicator system for multimodal outputs.",
+        "description": "Add Claude Vision capabilities to the Lookahead Builder for processing and analyzing images, enabling multimodal AI interactions with proper image handling and response integration.",
+        "dependencies": [
+          1,
+          3
+        ],
+        "testStrategy": "Image upload and processing tests, multimodal response validation, image format compatibility testing, and vision-specific confidence indicator accuracy"
+      },
+      {
+        "id": 5,
+        "title": "Implement Zero Data Retention and Security Compliance",
+        "status": "pending",
+        "details": "Implement automatic conversation cleanup that purges all chat data immediately after streaming completion. Create secure memory management to clear sensitive data from application state. Add data retention policy enforcement with automated cleanup schedules. Implement secure API key management with environment variable validation. Create audit logging for compliance verification without storing user data. Add user feedback mechanisms for API errors without exposing sensitive information.",
+        "description": "Ensure complete data privacy by implementing automatic conversation cleanup, secure data handling practices, and compliance verification for zero data retention requirements.",
+        "dependencies": [
+          2,
+          4
+        ],
+        "testStrategy": "Data retention compliance audits, memory cleanup verification tests, secure data handling validation, and privacy policy compliance testing"
+      }
+    ],
+    "description": "Integrate Claude 3.5 Sonnet API with streaming responses, implement confidence indicators, and build the core AI processing pipeline",
+    "dependencies": [
+      3
+    ],
+    "testStrategy": "API integration testing with various input types, streaming response validation, rate limiting and error handling testing, confidence indicator accuracy validation, and data retention compliance verification"
+  },
+  {
+    "id": 5,
+    "title": "AI Agent Workspaces and Export Functionality",
+    "status": "pending",
+    "details": "Implement lazy-loaded agent workspaces: Site Scribe (voice/text → professional email), Lookahead Builder (photo/text → schedule table), Code & Spec Commander (PDF + question → cited answers), Contract Hawk (PDF → risk analysis), and Submittal Scrubber (two PDFs → compliance table). Add Web Speech API integration for English voice input with fallback to text. Implement client-side exports (clipboard, mailto, Excel via SheetJS, PDF via jsPDF) with proper data sanitization. Add how-to-use overlays with video iframe support and text fallbacks. Include inline citations, confidence badges, and proper navigation between agents.",
+    "priority": "medium",
+    "subtasks": [
+      {
+        "id": 1,
+        "title": "Implement Core Agent Workspace Infrastructure with Lazy Loading",
+        "status": "pending",
+        "details": "Build a React-based workspace container with dynamic imports for each agent component. Implement route-based lazy loading using React.lazy() and Suspense. Create shared components for workspace layout, navigation, and common UI elements. Set up state management for agent switching and data persistence. Include loading states and error boundaries for each workspace.",
+        "description": "Create the foundational workspace system that supports lazy loading of agent components and provides a unified interface for all five specialized AI agents with proper routing and state management.",
+        "dependencies": [],
+        "testStrategy": "Test lazy loading performance with network throttling, verify proper component mounting/unmounting, validate navigation between agents"
+      },
+      {
+        "id": 2,
+        "title": "Build Individual AI Agent Components and Logic",
+        "status": "pending",
+        "details": "Create separate React components for each agent with their unique interfaces. Site Scribe: voice/text input to email output. Lookahead Builder: photo/text to schedule table. Code & Spec Commander: PDF upload + questions to cited answers. Contract Hawk: PDF analysis to risk assessment. Submittal Scrubber: dual PDF comparison to compliance table. Implement file upload handling, text processing, and result formatting for each agent.",
+        "description": "Implement the five specialized AI agent workspaces: Site Scribe, Lookahead Builder, Code & Spec Commander, Contract Hawk, and Submittal Scrubber with their specific input/output handling and processing logic.",
+        "dependencies": [
+          1
+        ],
+        "testStrategy": "Test each agent individually with various input types, validate output formats, verify error handling for invalid inputs"
+      },
+      {
+        "id": 3,
+        "title": "Integrate Web Speech API with Voice Input Functionality",
+        "status": "pending",
+        "details": "Implement Web Speech API integration with SpeechRecognition interface. Add browser compatibility detection and graceful fallbacks to text input. Create voice input UI components with recording indicators, transcription display, and error handling. Configure for English language recognition with confidence thresholds. Implement voice input specifically for Site Scribe and other text-capable agents.",
+        "description": "Add comprehensive voice input capabilities using the Web Speech API with proper browser compatibility checks, fallback mechanisms, and English language processing for applicable agents.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "Test voice recognition accuracy in different environments, validate fallback mechanisms, verify cross-browser compatibility"
+      },
+      {
+        "id": 4,
+        "title": "Implement Comprehensive Export System with Multiple Formats",
+        "status": "pending",
+        "details": "Create export utilities for each format: clipboard API for text copying, mailto links for email sharing, SheetJS integration for Excel exports, and jsPDF for PDF generation. Implement data sanitization to prevent XSS and ensure clean exports. Add format-specific optimizations (table formatting for Excel, proper PDF layouts). Create export UI components with format selection and preview capabilities.",
+        "description": "Build a robust export system supporting clipboard, mailto, Excel (via SheetJS), and PDF (via jsPDF) formats with proper data sanitization and format-specific optimizations for each agent's output.",
+        "dependencies": [
+          2
+        ],
+        "testStrategy": "Validate export formats across different browsers, test data sanitization effectiveness, verify file integrity and formatting"
+      },
+      {
+        "id": 5,
+        "title": "Add Help System with Citations, Confidence Indicators, and Navigation",
+        "status": "pending",
+        "details": "Create help overlay system with video iframe embedding and text fallbacks. Implement inline citation system for referenced sources with proper linking. Add confidence badge components that display reliability scores for AI-generated content. Build inter-agent navigation with breadcrumbs and quick-switch functionality. Include contextual help tooltips and guided tours for each workspace.",
+        "description": "Implement comprehensive help overlays with video iframe support, inline citations, confidence badges, and seamless navigation between agents to enhance user experience and result reliability.",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "testStrategy": "Test help overlay functionality, verify citation accuracy and linking, validate confidence score calculations, test navigation flow between agents"
+      }
+    ],
+    "description": "Build the five specialized AI agent workspaces with lazy loading, voice input, and comprehensive export capabilities",
+    "dependencies": [
+      2,
+      4
+    ],
+    "testStrategy": "Individual agent functionality testing, voice input accuracy testing in various environments, export format validation, lazy loading performance testing, citation accuracy verification, and cross-agent navigation testing"
+  }
+]
