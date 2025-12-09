@@ -1,6 +1,6 @@
 /**
- * Hook for streaming Claude API responses
- * Handles Server-Sent Events (SSE) streaming
+ * Hook for streaming Claude API responses with FormData (for file uploads)
+ * Handles Server-Sent Events (SSE) streaming with multipart/form-data
  */
 
 import { useState, useCallback } from 'react'
@@ -11,27 +11,18 @@ export interface Citation {
   text?: string
 }
 
-interface StreamChunk {
-  chunk?: string
-  type: 'text' | 'complete' | 'error'
-  confidence?: 'High' | 'Med' | 'Low'
-  citations?: Citation[]
-  found_in_document?: boolean
-  message?: string
-}
-
-interface UseClaudeStreamReturn {
+interface UseClaudeStreamFormDataReturn {
   response: string
   confidence: 'High' | 'Med' | 'Low' | null
   citations: Citation[]
   foundInDocument: boolean | null
   isLoading: boolean
   error: string | null
-  streamResponse: (url: string, body: any) => Promise<void>
+  streamFormDataResponse: (url: string, formData: FormData) => Promise<void>
   reset: () => void
 }
 
-export function useClaudeStream(): UseClaudeStreamReturn {
+export function useClaudeStreamFormData(): UseClaudeStreamFormDataReturn {
   const [response, setResponse] = useState('')
   const [confidence, setConfidence] = useState<'High' | 'Med' | 'Low' | null>(null)
   const [citations, setCitations] = useState<Citation[]>([])
@@ -39,7 +30,7 @@ export function useClaudeStream(): UseClaudeStreamReturn {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const streamResponse = useCallback(async (url: string, body: any) => {
+  const streamFormDataResponse = useCallback(async (url: string, formData: FormData) => {
     setIsLoading(true)
     setError(null)
     setResponse('')
@@ -50,14 +41,13 @@ export function useClaudeStream(): UseClaudeStreamReturn {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+        body: formData,
+        // Don't set Content-Type header - browser will set it with boundary
       })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorData = await response.json().catch(() => ({ detail: 'Request failed' }))
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
       }
 
       // Read the stream
@@ -82,7 +72,7 @@ export function useClaudeStream(): UseClaudeStreamReturn {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
-              const data: StreamChunk = JSON.parse(line.slice(6))
+              const data = JSON.parse(line.slice(6))
 
               if (data.type === 'text' && data.chunk) {
                 setResponse((prev) => prev + data.chunk)
@@ -128,7 +118,7 @@ export function useClaudeStream(): UseClaudeStreamReturn {
     foundInDocument,
     isLoading,
     error,
-    streamResponse,
+    streamFormDataResponse,
     reset,
   }
 }

@@ -5,7 +5,7 @@ Handles PDF text extraction and analysis using PyMuPDF
 
 import os
 import tempfile
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 import fitz  # PyMuPDF
 from pathlib import Path
 
@@ -17,7 +17,7 @@ class PDFProcessor:
     MAX_PAGES = 100
 
     @staticmethod
-    def validate_pdf(file_path: str) -> Dict[str, any]:
+    def validate_pdf(file_path: str) -> Dict[str, Any]:
         """
         Validate PDF file size and page count
         
@@ -59,7 +59,7 @@ class PDFProcessor:
             }
 
     @staticmethod
-    def extract_text(file_path: str, page_range: Optional[List[int]] = None) -> Dict[str, any]:
+    def extract_text(file_path: str, page_range: Optional[List[int]] = None) -> Dict[str, Any]:
         """
         Extract text from PDF file
         
@@ -109,7 +109,7 @@ class PDFProcessor:
             }
 
     @staticmethod
-    def extract_text_with_citations(file_path: str) -> Dict[str, any]:
+    def extract_text_with_citations(file_path: str) -> Dict[str, Any]:
         """
         Extract text with page and section citations
         
@@ -175,7 +175,7 @@ class PDFProcessor:
             }
 
     @staticmethod
-    def get_pdf_metadata(file_path: str) -> Dict[str, any]:
+    def get_pdf_metadata(file_path: str) -> Dict[str, Any]:
         """
         Get PDF metadata (title, author, creation date, etc.)
         

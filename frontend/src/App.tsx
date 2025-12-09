@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
 import SiteScribePage from './features/site-scribe/SiteScribePage'
+import CodeCommanderPage from './features/code-commander/CodeCommanderPage'
 import FileTestPage from './pages/FileTestPage'
 
 function App() {
@@ -30,6 +31,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SiteScribePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent/code-commander"
+            element={
+              <ProtectedRoute>
+                <CodeCommanderPage />
               </ProtectedRoute>
             }
           />
