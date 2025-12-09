@@ -14,7 +14,9 @@ class SiteScribeRequest(BaseModel):
         description="Tone for the email: neutral, firm, or cya (cover your ass)"
     )
     to_email: Optional[str] = Field(None, description="Recipient email address")
+    to_name: Optional[str] = Field(None, description="Recipient name")
     from_email: Optional[str] = Field(None, description="Sender email address")
+    from_name: Optional[str] = Field(None, description="Sender name")
     subject: Optional[str] = Field(None, description="Email subject line (optional, AI will generate if not provided)")
     cc: Optional[str] = Field(None, description="CC email addresses (comma-separated)")
     bcc: Optional[str] = Field(None, description="BCC email addresses (comma-separated)")

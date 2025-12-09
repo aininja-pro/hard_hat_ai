@@ -53,7 +53,9 @@ Tone: CYA (Cover Your Ass) - Document everything thoroughly. Use a careful, deta
 def get_user_prompt(
     raw_text: str,
     to_email: Optional[str] = None,
+    to_name: Optional[str] = None,
     from_email: Optional[str] = None,
+    from_name: Optional[str] = None,
     subject: Optional[str] = None,
     cc: Optional[str] = None,
     bcc: Optional[str] = None,
@@ -64,7 +66,9 @@ def get_user_prompt(
     Args:
         raw_text: The raw field notes from the user
         to_email: Recipient email address
+        to_name: Recipient name
         from_email: Sender email address
+        from_name: Sender name
         subject: Optional subject line
         cc: CC recipients (comma-separated)
         bcc: BCC recipients (comma-separated)
@@ -73,10 +77,31 @@ def get_user_prompt(
         Formatted prompt for Claude
     """
     email_metadata = []
-    if to_email:
-        email_metadata.append(f"To: {to_email}")
-    if from_email:
-        email_metadata.append(f"From: {from_email}")
+    
+    # Build To field with name if provided
+    if to_email or to_name:
+        to_field = "To: "
+        if to_name:
+            to_field += to_name
+        if to_email:
+            if to_name:
+                to_field += f" <{to_email}>"
+            else:
+                to_field += to_email
+        email_metadata.append(to_field)
+    
+    # Build From field with name if provided
+    if from_email or from_name:
+        from_field = "From: "
+        if from_name:
+            from_field += from_name
+        if from_email:
+            if from_name:
+                from_field += f" <{from_email}>"
+            else:
+                from_field += from_email
+        email_metadata.append(from_field)
+    
     if cc:
         email_metadata.append(f"CC: {cc}")
     if bcc:
@@ -90,17 +115,30 @@ def get_user_prompt(
     
     subject_instruction = "Use the provided subject line above." if subject else "Generate an appropriate subject line."
     
+    # Build name instructions
+    name_instructions = []
+    if to_name:
+        name_instructions.append(f"Use '{to_name}' as the recipient's name in the greeting (e.g., 'Dear {to_name},' or 'Hello {to_name},').")
+    if from_name:
+        name_instructions.append(f"Use '{from_name}' as the sender's name in the signature/closing.")
+    
+    name_instruction_text = ""
+    if name_instructions:
+        name_instruction_text = "\n\nIMPORTANT - Name Usage:\n" + "\n".join(name_instructions) + "\nDo NOT make up or infer names - only use the names provided above.\n"
+    
     return f"""Transform the following field notes into a professional email. Maintain all important information, but make it suitable for sending to clients, supervisors, or other stakeholders.
-{metadata_section}
+{metadata_section}{name_instruction_text}
 Field Notes:
 {raw_text}
 
 Please generate a professional email that:
 1. {subject_instruction}
-2. Includes a professional greeting (use recipient name if provided)
+2. Includes a professional greeting - {"use the recipient name provided above" if to_name else "use a generic greeting if no name is provided"}
 3. Transforms the rough notes into clear, professional language
 4. Maintains all important details and facts
-5. Ends with an appropriate closing and signature
+5. Ends with an appropriate closing and signature - {"use the sender name provided above" if from_name else "use a generic signature if no name is provided"}
+
+CRITICAL: Only use the names provided in the Email Details section. Do NOT make up, infer, or guess names. If no name is provided, use a generic greeting/signature.
 
 Generate the complete email now:"""
 
@@ -123,7 +161,9 @@ async def transform_notes(request: SiteScribeRequest):
     user_prompt = get_user_prompt(
         raw_text=request.text,
         to_email=request.to_email,
+        to_name=request.to_name,
         from_email=request.from_email,
+        from_name=request.from_name,
         subject=request.subject,
         cc=request.cc,
         bcc=request.bcc,

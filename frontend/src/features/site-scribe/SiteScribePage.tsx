@@ -25,7 +25,9 @@ export default function SiteScribePage() {
   const [inputText, setInputText] = useState('')
   const [tone, setTone] = useState<Tone>('neutral')
   const [toEmail, setToEmail] = useState('')
+  const [toName, setToName] = useState('')
   const [fromEmail, setFromEmail] = useState('')
+  const [fromName, setFromName] = useState('')
   const [subject, setSubject] = useState('')
   const [cc, setCc] = useState('')
   const [bcc, setBcc] = useState('')
@@ -43,7 +45,9 @@ export default function SiteScribePage() {
       text: inputText,
       tone,
       to_email: toEmail.trim() || undefined,
+      to_name: toName.trim() || undefined,
       from_email: fromEmail.trim() || undefined,
+      from_name: fromName.trim() || undefined,
       subject: subject.trim() || undefined,
       cc: cc.trim() || undefined,
       bcc: bcc.trim() || undefined,
@@ -112,7 +116,20 @@ export default function SiteScribePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  To <span className="text-gray-500">(optional)</span>
+                  To Name <span className="text-gray-500">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={toName}
+                  onChange={(e) => setToName(e.target.value)}
+                  placeholder="John Smith"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  To Email <span className="text-gray-500">(optional)</span>
                 </label>
                 <input
                   type="email"
@@ -125,7 +142,20 @@ export default function SiteScribePage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  From <span className="text-gray-500">(optional)</span>
+                  From Name <span className="text-gray-500">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={fromName}
+                  onChange={(e) => setFromName(e.target.value)}
+                  placeholder="Your Name"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  disabled={isLoading}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  From Email <span className="text-gray-500">(optional)</span>
                 </label>
                 <input
                   type="email"
