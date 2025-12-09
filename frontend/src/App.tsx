@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn'
 import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
 import SiteScribePage from './features/site-scribe/SiteScribePage'
+import FileTestPage from './pages/FileTestPage'
 
 function App() {
   return (
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SiteScribePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test/file-processing"
+            element={
+              <ProtectedRoute>
+                <FileTestPage />
               </ProtectedRoute>
             }
           />
