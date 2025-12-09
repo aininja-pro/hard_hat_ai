@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import SiteScribePage from './features/site-scribe/SiteScribePage'
 import CodeCommanderPage from './features/code-commander/CodeCommanderPage'
 import ContractHawkPage from './features/contract-hawk/ContractHawkPage'
+import SubmittalScrubberPage from './features/submittal-scrubber/SubmittalScrubberPage'
 import FileTestPage from './pages/FileTestPage'
 
 function App() {
@@ -48,6 +49,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ContractHawkPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent/submittal-scrubber"
+            element={
+              <ProtectedRoute>
+                <SubmittalScrubberPage />
               </ProtectedRoute>
             }
           />
