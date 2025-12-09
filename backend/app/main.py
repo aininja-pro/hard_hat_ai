@@ -12,7 +12,7 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.cors import get_cors_config
-from app.routers import health, site_scribe, file_test, code_commander
+from app.routers import health, site_scribe, file_test, code_commander, contract_hawk
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -33,6 +33,7 @@ app.include_router(health.router)
 app.include_router(site_scribe.router)
 app.include_router(file_test.router)  # Test endpoint for Phase 3
 app.include_router(code_commander.router)
+app.include_router(contract_hawk.router)
 
 
 @app.get("/")

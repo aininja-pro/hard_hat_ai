@@ -6,6 +6,7 @@ import AuthCallback from './pages/AuthCallback'
 import Dashboard from './pages/Dashboard'
 import SiteScribePage from './features/site-scribe/SiteScribePage'
 import CodeCommanderPage from './features/code-commander/CodeCommanderPage'
+import ContractHawkPage from './features/contract-hawk/ContractHawkPage'
 import FileTestPage from './pages/FileTestPage'
 
 function App() {
@@ -39,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CodeCommanderPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent/contract-hawk"
+            element={
+              <ProtectedRoute>
+                <ContractHawkPage />
               </ProtectedRoute>
             }
           />

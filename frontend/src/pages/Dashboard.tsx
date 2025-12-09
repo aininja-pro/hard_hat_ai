@@ -67,6 +67,8 @@ function DashboardContent() {
       navigate('/agent/site-scribe')
     } else if (agentId === 'code-commander') {
       navigate('/agent/code-commander')
+    } else if (agentId === 'contract-hawk') {
+      navigate('/agent/contract-hawk')
     } else {
       // Other agents coming soon
       alert(`${agentId} workspace coming soon!`)
