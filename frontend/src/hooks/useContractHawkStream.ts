@@ -13,6 +13,7 @@ interface UseContractHawkStreamReturn {
   confidence: 'High' | 'Med' | 'Low' | null
   isLoading: boolean
   error: string | null
+  progressMessage: string | null
   streamFormDataResponse: (url: string, formData: FormData) => Promise<void>
   reset: () => void
 }
@@ -24,6 +25,7 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
   const [confidence, setConfidence] = useState<'High' | 'Med' | 'Low' | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [progressMessage, setProgressMessage] = useState<string | null>(null)
 
   const streamFormDataResponse = useCallback(async (url: string, formData: FormData) => {
     setIsLoading(true)
@@ -32,6 +34,7 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
     setRisks([])
     setOverallRiskLevel(null)
     setConfidence(null)
+    setProgressMessage(null) // Reset progress message
 
     try {
       const response = await fetch(url, {
@@ -70,7 +73,12 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
             try {
               const data = JSON.parse(line.slice(6))
 
-              if (data.type === 'text' && data.chunk) {
+              if (data.type === 'progress') {
+                // Update progress message
+                const progressMsg = data.message || null
+                console.log('Contract Hawk Progress:', progressMsg)
+                setProgressMessage(progressMsg)
+              } else if (data.type === 'text' && data.chunk) {
                 // Accumulate summary text as it streams
                 accumulatedSummary += data.chunk
                 setSummary(accumulatedSummary)
@@ -87,6 +95,7 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
                 if (data.summary) {
                   setSummary(data.summary)
                 }
+                setProgressMessage(null) // Clear progress when complete
                 setIsLoading(false)
               } else if (data.type === 'error') {
                 throw new Error(data.message || 'Unknown error')
@@ -110,6 +119,7 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
     setConfidence(null)
     setIsLoading(false)
     setError(null)
+    setProgressMessage(null)
   }, [])
 
   return {
@@ -119,6 +129,7 @@ export function useContractHawkStream(): UseContractHawkStreamReturn {
     confidence,
     isLoading,
     error,
+    progressMessage,
     streamFormDataResponse,
     reset,
   }

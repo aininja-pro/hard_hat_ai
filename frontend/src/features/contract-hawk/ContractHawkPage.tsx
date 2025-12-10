@@ -10,6 +10,7 @@ import { FileUpload } from '../../components/FileUpload'
 import { StreamingResponse } from '../../components/StreamingResponse'
 import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { RiskTable } from '../../components/RiskTable'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel, exportToPDF, exportToClipboard } from '../../utils/exportRiskTable'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -24,6 +25,7 @@ export default function ContractHawkPage() {
     confidence,
     isLoading,
     error,
+    progressMessage,
     streamFormDataResponse,
     reset,
   } = useContractHawkStream()
@@ -136,15 +138,22 @@ export default function ContractHawkPage() {
           {(summary || risks.length > 0 || isLoading || error) && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Risk Analysis Results
-                  </h2>
-                  {overallRiskLevel && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Overall Risk Level: <span className="font-semibold">{overallRiskLevel}</span>
-                    </p>
-                  )}
+                <div className="flex items-center gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Risk Analysis Results
+                    </h2>
+                    {overallRiskLevel && (
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        Overall Risk Level: <span className="font-semibold">{overallRiskLevel}</span>
+                      </p>
+                    )}
+                  </div>
+                  <ProgressIndicator
+                    isLoading={isLoading}
+                    message={progressMessage || (isLoading ? 'Analyzing contract...' : undefined)}
+                    size="sm"
+                  />
                 </div>
                 {risks.length > 0 && (
                   <div className="flex gap-2">

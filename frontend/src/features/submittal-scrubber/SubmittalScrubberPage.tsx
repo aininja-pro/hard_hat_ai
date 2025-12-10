@@ -10,6 +10,7 @@ import { DualFileUpload } from '../../components/DualFileUpload'
 import { StreamingResponse } from '../../components/StreamingResponse'
 import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { ComplianceTable } from '../../components/ComplianceTable'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel } from '../../utils/exportComplianceTable'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -144,9 +145,16 @@ export default function SubmittalScrubberPage() {
           {(summary || complianceItems.length > 0 || isLoading || error) && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Compliance Analysis Results
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Compliance Analysis Results
+                  </h2>
+                  <ProgressIndicator
+                    isLoading={isLoading}
+                    message={isLoading ? 'Comparing documents...' : undefined}
+                    size="sm"
+                  />
+                </div>
                 {complianceItems.length > 0 && (
                   <button
                     onClick={handleExportExcel}

@@ -10,6 +10,7 @@ import { FileUpload } from '../../components/FileUpload'
 import { StreamingResponse } from '../../components/StreamingResponse'
 import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { CitationDisplay } from '../../components/CitationDisplay'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { QuestionSuggestions } from '../../components/QuestionSuggestions'
 import { copyToClipboard } from '../../utils/exports'
 import { formatAnswerWithCitations, formatAnswerWithCitationsMarkdown } from '../../utils/exportWithCitations'
@@ -183,9 +184,16 @@ export default function CodeCommanderPage() {
           {(response || isLoading || error) && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Answer
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Answer
+                  </h2>
+                  <ProgressIndicator
+                    isLoading={isLoading}
+                    message={isLoading ? 'Analyzing document...' : undefined}
+                    size="sm"
+                  />
+                </div>
                 {response && (
                   <div className="flex gap-2">
                     <button

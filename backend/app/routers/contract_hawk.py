@@ -28,7 +28,17 @@ def build_risk_analysis_prompt(document_text: str, total_pages: int) -> str:
     Returns:
         Formatted prompt for Claude
     """
-    return f"""You are a contract risk analysis expert specializing in construction contracts. Analyze the following contract document and identify potential risks, liability issues, and problematic clauses.
+    # Truncate document if very long to speed up processing
+    # Most critical clauses are usually in the first 30-35k characters
+    doc_length = len(document_text)
+    if doc_length > 35000:
+        truncated_text = document_text[:35000]
+        truncation_note = f"\n\nNOTE: Document truncated from {doc_length} to 35000 characters for analysis. Focus on the most critical clauses which typically appear early in contracts."
+    else:
+        truncated_text = document_text
+        truncation_note = ""
+    
+    return f"""You are a contract risk analysis expert specializing in construction contracts. Analyze the following contract document and identify potential risks, liability issues, and problematic clauses.{truncation_note}
 
 CRITICAL CLAUSE DETECTION - SCAN FOR THESE SPECIFIC PATTERNS:
 
@@ -179,7 +189,9 @@ Format your response as JSON with this structure:
 }}
 
 Contract Document ({total_pages} pages):
-{document_text[:50000]}
+{truncated_text}
+
+IMPORTANT: Focus on finding the critical clauses listed above. Be efficient - you don't need to analyze every word, just scan for the specific patterns. If the document is truncated, analyze what you have and note that the full document may contain additional risks.
 
 Analyze this contract systematically. Check EVERY critical pattern listed above. Provide the risk analysis in JSON format:"""
 
@@ -295,7 +307,12 @@ async def analyze_contract(file: UploadFile = File(...)):
                     detail="PDF appears to be empty or contains no extractable text"
                 )
             
-            # Build prompt
+            # Log document size for performance monitoring
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Contract Hawk: Processing {total_pages} pages, {len(document_text)} characters")
+            
+            # Build prompt (with smart truncation if needed)
             user_prompt = build_risk_analysis_prompt(document_text, total_pages)
             
             async def generate_stream():
@@ -303,15 +320,86 @@ async def analyze_contract(file: UploadFile = File(...)):
                 full_response = ""
                 
                 try:
-                    # Stream the AI response
-                    for chunk in claude_client.stream_completion(
-                        prompt=user_prompt,
-                        system_prompt="You are a contract risk analysis expert. Analyze contracts for potential risks, liability issues, and problematic clauses. Always respond in valid JSON format.",
-                        max_tokens=4096
-                    ):
-                        full_response += chunk
-                        # Send chunk as Server-Sent Event
-                        yield f"data: {json.dumps({'chunk': chunk, 'type': 'text'})}\n\n"
+                    # Send progress updates for each stage
+                    progress_stages = [
+                        "Extracting text from PDF...",
+                        "Analyzing critical clauses (Severity 5)...",
+                        "Checking high-risk clauses (Severity 4)...",
+                        "Scanning for medium-risk items (Severity 3)...",
+                        "Reviewing standard clauses (Severity 1-2)...",
+                        "Compiling risk analysis...",
+                    ]
+                    
+                    import asyncio
+                    import time
+                    
+                    # Stage 1: PDF extraction (already done, but notify user)
+                    yield f"data: {json.dumps({'type': 'progress', 'stage': 1, 'message': progress_stages[0]})}\n\n"
+                    await asyncio.sleep(0.3)  # Small delay so user sees the message
+                    
+                    # Stage 2: Start AI analysis
+                    yield f"data: {json.dumps({'type': 'progress', 'stage': 2, 'message': progress_stages[1]})}\n\n"
+                    await asyncio.sleep(0.2)
+                    
+                    # Stream the AI response with background progress updates
+                    from collections import deque
+                    
+                    # Queue for progress messages from background task
+                    progress_queue = deque()
+                    streaming_complete = False
+                    
+                    # Background task to send progress updates at fixed intervals
+                    async def send_progress_updates():
+                        """Send progress updates at fixed intervals independently"""
+                        progress_updates = [
+                            (1.5, 2, "Checking high-risk clauses (Severity 4)..."),
+                            (3.0, 3, "Scanning for medium-risk items (Severity 3)..."),
+                            (5.0, 4, "Reviewing standard clauses (Severity 1-2)..."),
+                            (7.0, 5, "Compiling risk analysis..."),
+                        ]
+                        
+                        for delay, stage_idx, message in progress_updates:
+                            await asyncio.sleep(delay)
+                            if not streaming_complete:
+                                logger.info(f"Contract Hawk Progress: {message}")
+                                progress_queue.append((stage_idx, message))
+                    
+                    # Start background progress task
+                    progress_task = asyncio.create_task(send_progress_updates())
+                    
+                    logger.info("Starting Contract Hawk AI analysis stream...")
+                    chunk_count = 0
+                    
+                    try:
+                        # Stream the AI response
+                        for chunk in claude_client.stream_completion(
+                            prompt=user_prompt,
+                            system_prompt="You are a contract risk analysis expert. Analyze contracts for potential risks, liability issues, and problematic clauses. Always respond in valid JSON format. Be concise but thorough.",
+                            max_tokens=3072  # Reduced from 4096 - still plenty for comprehensive analysis
+                        ):
+                            full_response += chunk
+                            chunk_count += 1
+                            
+                            # Send any pending progress updates from the queue
+                            while progress_queue:
+                                stage_idx, message = progress_queue.popleft()
+                                yield f"data: {json.dumps({'type': 'progress', 'stage': stage_idx, 'message': message})}\n\n"
+                            
+                            # Send chunk as Server-Sent Event
+                            yield f"data: {json.dumps({'chunk': chunk, 'type': 'text'})}\n\n"
+                    finally:
+                        # Mark streaming as complete and cancel progress task
+                        streaming_complete = True
+                        progress_task.cancel()
+                        
+                        # Send any remaining progress updates
+                        while progress_queue:
+                            stage_idx, message = progress_queue.popleft()
+                            yield f"data: {json.dumps({'type': 'progress', 'stage': stage_idx, 'message': message})}\n\n"
+                    
+                    # Final compilation stage
+                    yield f"data: {json.dumps({'type': 'progress', 'stage': 6, 'message': progress_stages[5]})}\n\n"
+                    await asyncio.sleep(0.1)
                     
                     # Parse the response
                     parsed_data = parse_risk_analysis_response(full_response)

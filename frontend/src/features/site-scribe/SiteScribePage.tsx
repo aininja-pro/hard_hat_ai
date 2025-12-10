@@ -9,6 +9,7 @@ import { useClaudeStream } from '../../hooks/useClaudeStream'
 import { ToneSelector } from './components/ToneSelector'
 import { StreamingResponse } from '../../components/StreamingResponse'
 import { ConfidenceBadge } from '../../components/ConfidenceBadge'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
 import {
   copyToClipboard,
   openMailtoLink,
@@ -241,9 +242,16 @@ export default function SiteScribePage() {
           {(response || isLoading || error) && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Generated Email
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Generated Email
+                  </h2>
+                  <ProgressIndicator
+                    isLoading={isLoading}
+                    message={isLoading ? 'Generating professional email...' : undefined}
+                    size="sm"
+                  />
+                </div>
                 {response && (
                   <div className="flex gap-2">
                     <button

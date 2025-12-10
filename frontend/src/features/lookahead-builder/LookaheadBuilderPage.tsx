@@ -10,6 +10,7 @@ import { MultiImageUpload } from '../../components/MultiImageUpload'
 import { StreamingResponse } from '../../components/StreamingResponse'
 import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { ScheduleTable } from '../../components/ScheduleTable'
+import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel, exportToClipboard } from '../../utils/exportSchedule'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -201,9 +202,16 @@ export default function LookaheadBuilderPage() {
           {(summary || scheduleData || isLoading || error) && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Schedule Results
-                </h2>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Schedule Results
+                  </h2>
+                  <ProgressIndicator
+                    isLoading={isLoading}
+                    message={isLoading ? 'Analyzing images and generating schedule...' : undefined}
+                    size="sm"
+                  />
+                </div>
                 {scheduleData && scheduleData.schedule.length > 0 && (
                   <div className="flex gap-2">
                     <button
