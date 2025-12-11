@@ -1,5 +1,5 @@
 /**
- * Contract Hawk Page
+ * Contract Hawk Page - Premium Industrial Design
  * Analyze contract PDFs for risks and liability issues
  */
 
@@ -12,8 +12,8 @@ import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { RiskTable } from '../../components/RiskTable'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel, exportToPDF, exportToClipboard } from '../../utils/exportRiskTable'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../utils/apiConfig'
+import { ChevronLeft, Copy, FileSpreadsheet, FileText } from 'lucide-react'
 
 export default function ContractHawkPage() {
   const navigate = useNavigate()
@@ -85,19 +85,27 @@ export default function ContractHawkPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Header - Premium Industrial */}
+      <header className="page-header">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#FF6B0008,transparent_60%)]" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              {/* Premium back button */}
               <button
                 onClick={() => navigate('/dashboard')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="group btn-back"
+                aria-label="Back to dashboard"
               >
-                ← Back
+                <ChevronLeft className="w-4 h-4 text-[#666666] group-hover:text-[#FF6B00] group-hover:-translate-x-1 transition-all" />
+                <span className="text-[#999999] text-sm font-medium group-hover:text-white hidden sm:inline">
+                  Back
+                </span>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+
+              {/* Page title with gradient */}
+              <h1 className="text-xl sm:text-2xl font-bold tracking-wide uppercase text-gradient-white truncate">
                 Contract Hawk
               </h1>
             </div>
@@ -110,11 +118,11 @@ export default function ContractHawkPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Input Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+          <div className="card-premium p-6">
+            <h2 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">
               Upload Contract for Risk Analysis
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-[#999999] mb-4">
               Upload a contract PDF to identify potential risks, liability issues, and problematic clauses.
             </p>
             <div className="mb-4">
@@ -128,7 +136,7 @@ export default function ContractHawkPage() {
             <button
               onClick={handleAnalyze}
               disabled={isLoading || !selectedFile}
-              className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary btn-shine"
             >
               {isLoading ? 'Analyzing Contract...' : 'Analyze Contract'}
             </button>
@@ -136,16 +144,16 @@ export default function ContractHawkPage() {
 
           {/* Output Section */}
           {(summary || risks.length > 0 || isLoading || error) && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="card-premium p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    <h2 className="text-lg font-semibold text-white uppercase tracking-wide">
                       Risk Analysis Results
                     </h2>
                     {overallRiskLevel && (
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        Overall Risk Level: <span className="font-semibold">{overallRiskLevel}</span>
+                      <p className="text-sm text-[#999999] mt-1">
+                        Overall Risk Level: <span className="font-semibold text-[#FF6B00]">{overallRiskLevel}</span>
                       </p>
                     )}
                   </div>
@@ -156,51 +164,52 @@ export default function ContractHawkPage() {
                   />
                 </div>
                 {risks.length > 0 && (
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       onClick={handleExportClipboard}
-                      className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      className="btn-secondary flex items-center gap-2"
                     >
-                      Copy
+                      <Copy className="w-4 h-4" />
+                      <span className="hidden sm:inline">Copy</span>
                     </button>
                     <button
                       onClick={handleExportExcel}
-                      className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg text-white text-sm font-medium shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 touch-manipulation"
                     >
-                      Export Excel
+                      <FileSpreadsheet className="w-4 h-4" />
+                      <span className="hidden sm:inline">Export Excel</span>
                     </button>
                     <button
                       onClick={handleExportPDF}
-                      className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 rounded-lg text-white text-sm font-medium shadow-lg shadow-red-600/20 hover:shadow-xl hover:shadow-red-600/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 touch-manipulation"
                     >
-                      Export PDF
+                      <FileText className="w-4 h-4" />
+                      <span className="hidden sm:inline">Export PDF</span>
                     </button>
                   </div>
                 )}
               </div>
 
               {error && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 mb-4">
-                  {error}
+                <div className="alert-error mb-4">
+                  <p className="text-red-400">{error}</p>
                 </div>
               )}
 
               {/* Summary */}
               {summary && (
                 <div className="mb-6">
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-3">
                     Summary
                   </h3>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <StreamingResponse text={summary} isLoading={isLoading} />
-                  </div>
+                  <StreamingResponse text={summary} isLoading={isLoading} />
                 </div>
               )}
 
               {/* Risk Table */}
               {risks.length > 0 && (
                 <div>
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-4">
                     Identified Risks ({risks.length})
                   </h3>
                   <RiskTable risks={risks} />
@@ -208,7 +217,7 @@ export default function ContractHawkPage() {
               )}
 
               {!isLoading && summary && risks.length === 0 && (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="text-center py-8 text-[#666666]">
                   No specific risks identified. Review the summary above.
                 </div>
               )}
@@ -219,4 +228,3 @@ export default function ContractHawkPage() {
     </div>
   )
 }
-

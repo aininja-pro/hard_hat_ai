@@ -1,24 +1,38 @@
 /**
- * Mode Toggle Component
- * Switches between Field Mode (dark) and Office Mode (light)
+ * Mode Toggle Component - Industrial Design
+ * Switches between Field Mode (outdoor) and Office Mode (indoor)
  */
 
 import { useTheme } from '../contexts/ThemeContext'
+import { Sun, Moon } from 'lucide-react'
 
 export function ModeToggle() {
   const { mode, toggleMode } = useTheme()
+  const isField = mode === 'field'
 
   return (
     <button
       onClick={toggleMode}
-      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-      aria-label={`Switch to ${mode === 'field' ? 'Office' : 'Field'} Mode`}
+      className="
+        flex items-center gap-2 px-3 py-2
+        rounded-lg
+        bg-[#252525]
+        border border-[#333333]
+        hover:border-[#FF6B00]
+        transition-colors
+        min-h-[44px]
+        touch-manipulation
+      "
+      aria-label={`Switch to ${isField ? 'Office' : 'Field'} Mode`}
     >
-      <span className="text-sm font-medium">
-        {mode === 'field' ? '🏗️ Field' : '💼 Office'}
+      {isField ? (
+        <Moon className="w-4 h-4 text-[#FF6B00]" strokeWidth={1.5} />
+      ) : (
+        <Sun className="w-4 h-4 text-[#FFB800]" strokeWidth={1.5} />
+      )}
+      <span className="text-xs font-medium text-white uppercase tracking-wide">
+        {isField ? 'Field' : 'Office'}
       </span>
-      <span className="text-xs text-gray-600 dark:text-gray-400">Mode</span>
     </button>
   )
 }
-

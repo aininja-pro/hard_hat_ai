@@ -1,5 +1,5 @@
 /**
- * Site Scribe Page
+ * Site Scribe Page - Premium Industrial Design
  * Main workspace for transforming rough field notes into professional emails
  */
 
@@ -12,14 +12,14 @@ import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import {
   copyToClipboard,
-  openMailtoLink,
   extractSubject,
   extractEmailBody,
 } from '../../utils/exports'
+import { ChevronLeft, Copy, Mail } from 'lucide-react'
 
 type Tone = 'neutral' | 'firm' | 'cya'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../utils/apiConfig'
 
 export default function SiteScribePage() {
   const navigate = useNavigate()
@@ -69,7 +69,7 @@ export default function SiteScribePage() {
     if (!response) return
     const extractedSubject = extractSubject(response) || subject || 'Construction Update'
     const body = extractEmailBody(response)
-    
+
     // Build mailto with all recipients
     let mailtoParams = []
     if (toEmail) mailtoParams.push(`to=${encodeURIComponent(toEmail)}`)
@@ -77,25 +77,32 @@ export default function SiteScribePage() {
     if (bcc) mailtoParams.push(`bcc=${encodeURIComponent(bcc)}`)
     mailtoParams.push(`subject=${encodeURIComponent(extractedSubject)}`)
     mailtoParams.push(`body=${encodeURIComponent(body)}`)
-    
+
     window.location.href = `mailto:?${mailtoParams.join('&')}`
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Header - Premium Industrial */}
+      <header className="page-header">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#FF6B0008,transparent_60%)]" />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              {/* Premium back button */}
               <button
                 onClick={() => navigate('/dashboard')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="group btn-back"
                 aria-label="Back to dashboard"
               >
-                ← Back
+                <ChevronLeft className="w-4 h-4 text-[#666666] group-hover:text-[#FF6B00] group-hover:-translate-x-1 transition-all" />
+                <span className="text-[#999999] text-sm font-medium group-hover:text-white hidden sm:inline">
+                  Back
+                </span>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+
+              {/* Page title with gradient */}
+              <h1 className="text-xl sm:text-2xl font-bold tracking-wide uppercase text-gradient-white truncate">
                 Site Scribe
               </h1>
             </div>
@@ -108,131 +115,131 @@ export default function SiteScribePage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Input Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+          <div className="card-premium p-6">
+            <h2 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">
               Email Details
             </h2>
-            
+
             {/* Email Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  To Name <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  To Name <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={toName}
                   onChange={(e) => setToName(e.target.value)}
                   placeholder="John Smith"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  To Email <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  To Email <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="email"
                   value={toEmail}
                   onChange={(e) => setToEmail(e.target.value)}
                   placeholder="recipient@example.com"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  From Name <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  From Name <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={fromName}
                   onChange={(e) => setFromName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  From Email <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  From Email <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="email"
                   value={fromEmail}
                   onChange={(e) => setFromEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
             </div>
-            
+
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Subject <span className="text-gray-500">(optional - AI will generate if empty)</span>
+              <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                Subject <span className="text-[#666666] normal-case">(optional - AI will generate if empty)</span>
               </label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Email subject line"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="input-premium"
                 disabled={isLoading}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  CC <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  CC <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={cc}
                   onChange={(e) => setCc(e.target.value)}
                   placeholder="cc@example.com"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  BCC <span className="text-gray-500">(optional)</span>
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  BCC <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={bcc}
                   onChange={(e) => setBcc(e.target.value)}
                   placeholder="bcc@example.com"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
             </div>
-            
+
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
                 Field Notes
               </label>
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Type or paste your rough field notes here... (Voice input coming soon)"
-                className="w-full h-32 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="textarea-premium h-32"
                 disabled={isLoading}
               />
             </div>
-            
+
             <div className="mb-4">
               <ToneSelector selectedTone={tone} onToneChange={setTone} />
             </div>
-            
+
             <button
               onClick={handleGenerate}
               disabled={isLoading || !inputText.trim()}
-              className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary btn-shine"
             >
               {isLoading ? 'Generating...' : 'Generate Professional Email'}
             </button>
@@ -240,10 +247,10 @@ export default function SiteScribePage() {
 
           {/* Output Section */}
           {(response || isLoading || error) && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="card-premium p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-semibold text-white uppercase tracking-wide">
                     Generated Email
                   </h2>
                   <ProgressIndicator
@@ -256,22 +263,24 @@ export default function SiteScribePage() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleCopy}
-                      className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      className="btn-secondary flex items-center gap-2"
                     >
-                      Copy
+                      <Copy className="w-4 h-4" />
+                      <span className="hidden sm:inline">Copy</span>
                     </button>
                     <button
                       onClick={handleMailto}
-                      className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] rounded-lg text-black text-sm font-medium shadow-lg shadow-[#FF6B00]/20 hover:shadow-xl hover:shadow-[#FF6B00]/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 touch-manipulation"
                     >
-                      Open in Email
+                      <Mail className="w-4 h-4" />
+                      <span className="hidden sm:inline">Open in Email</span>
                     </button>
                   </div>
                 )}
               </div>
               {error && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
-                  {error}
+                <div className="alert-error mb-4">
+                  <p className="text-red-400">{error}</p>
                 </div>
               )}
               <StreamingResponse text={response} isLoading={isLoading} />
@@ -282,4 +291,3 @@ export default function SiteScribePage() {
     </div>
   )
 }
-

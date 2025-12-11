@@ -1,44 +1,444 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* White-label theme variables (can be overridden via env vars) */
-    --color-primary: #1F2937;
-    --color-accent: #3B82F6;
-    --color-secondary: #FBBF24;
-    --color-info: #10B981;
-    --color-danger: #EF4444;
-    
-    /* Light theme (Office Mode) */
-    --bg-primary: #F9FAFB;
-    --bg-secondary: #FFFFFF;
-    --text-primary: #111827;
-    --text-secondary: #6B7280;
+    /* Industrial Premium Theme */
+    /* Backgrounds - Slightly lighter for better button contrast */
+    --bg-primary: #111111;
+    --bg-card: #1E1E1E;
+    --bg-elevated: #2A2A2A;
+
+    /* Borders - Slightly lighter for visibility */
+    --border-card: #444444;
+    --border-focus: #FF6B00;
+
+    /* Accent - Safety Orange */
+    --accent: #FF6B00;
+    --accent-hover: #FF8533;
+    --accent-muted: #CC5500;
+
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #B3B3B3;
+    --text-muted: #666666;
+
+    /* Status Colors */
+    --success: #34C759;
+    --warning: #FFB800;
+    --danger: #FF3B30;
+    --info: #007AFF;
+
+    /* Legacy support */
+    --color-primary: #0D0D0D;
+    --color-accent: #FF6B00;
+    --color-secondary: #FFB800;
+    --color-info: #007AFF;
+    --color-danger: #FF3B30;
   }
 
+  /* Office Mode - slightly lighter for indoor use */
+  .office-mode {
+    --bg-primary: #0D0D0D;
+    --bg-card: #1A1A1A;
+    --bg-elevated: #252525;
+  }
+
+  /* Field Mode - pure black for OLED, higher contrast */
+  .field-mode {
+    --bg-primary: #000000;
+    --bg-card: #0D0D0D;
+    --bg-elevated: #1A1A1A;
+    --accent: #FF8533; /* Brighter for sunlight */
+  }
+
+  /* Dark class for Tailwind compatibility */
   .dark {
-    /* Dark theme (Field Mode) */
-    --bg-primary: #111827;
-    --bg-secondary: #1F2937;
-    --text-primary: #F9FAFB;
-    --text-secondary: #D1D5DB;
+    --bg-primary: #0D0D0D;
+    --bg-card: #1A1A1A;
+    --bg-elevated: #252525;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B3B3B3;
   }
 
   body {
-    @apply bg-[var(--bg-primary)] text-[var(--text-primary)];
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Ensure minimum touch target size for Field Mode */
-  button, a, input[type="button"], input[type="submit"] {
+  /* Premium heading styles */
+  h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Code/monospace for technical data */
+  code, pre {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  /* Ensure minimum touch target size for mobile */
+  button, a, input[type="button"], input[type="submit"], input[type="file"] {
     min-height: 44px;
     min-width: 44px;
+  }
+
+  /* Improve touch responsiveness */
+  button, a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Better mobile input styling */
+  input[type="text"],
+  input[type="email"],
+  textarea {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  /* Field mode larger touch targets */
+  .field-mode button,
+  .field-mode a,
+  .field-mode input {
+    min-height: 56px;
+  }
+
+  .field-mode {
+    font-size: 17px;
+  }
+
+  /* Premium scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #111111;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #444444;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FF6B00;
+  }
+
+  /* Better mobile text selection */
+  ::selection {
+    background-color: #FF6B00;
+    color: #000000;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* iOS-specific fixes */
+  @supports (-webkit-touch-callout: none) {
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
   }
 }
 
 @layer components {
-  /* Shared component styles will go here */
+  /* Industrial Card Style - Legacy */
+  .card-industrial {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 8px;
+    transition: border-color 0.15s ease;
+  }
+
+  .card-industrial:hover {
+    border-color: var(--accent);
+  }
+
+  .card-industrial:active {
+    background-color: var(--bg-elevated);
+  }
+
+  /* Premium card with glow effect */
+  .card-premium {
+    @apply bg-gradient-to-br from-[#1E1E1E] to-[#191919]
+           border border-[#444444]/50
+           rounded-xl
+           shadow-xl shadow-black/30
+           backdrop-blur-sm
+           transition-all duration-300;
+  }
+
+  .card-premium:hover {
+    @apply shadow-2xl shadow-[#FF6B00]/10
+           border-[#FF6B00]/40;
+  }
+
+  /* Premium glass morphism effect */
+  .glass-panel {
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(51, 51, 51, 0.3);
+  }
+
+  /* Animated gradient background for hero sections */
+  .gradient-mesh {
+    background:
+      radial-gradient(circle at 20% 50%, rgba(255, 107, 0, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 107, 0, 0.06) 0%, transparent 50%),
+      #111111;
+  }
+
+  /* Accent text */
+  .text-accent {
+    color: var(--accent);
+  }
+
+  /* Industrial button - Legacy */
+  .btn-industrial {
+    background-color: var(--accent);
+    color: #000000;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+  }
+
+  .btn-industrial:hover {
+    background-color: var(--accent-hover);
+  }
+
+  /* Premium Primary Button */
+  .btn-primary {
+    @apply relative w-full py-3.5 px-6
+           bg-gradient-to-r from-[#FF6B00] via-[#FF7A1A] to-[#FF6B00]
+           rounded-lg
+           font-semibold text-black text-base uppercase tracking-wider
+           shadow-lg shadow-[#FF6B00]/30
+           transition-all duration-200
+           overflow-hidden
+           min-h-[48px]
+           touch-manipulation;
+  }
+
+  .btn-primary:hover {
+    @apply shadow-xl shadow-[#FF6B00]/40 scale-[1.02];
+  }
+
+  .btn-primary:active {
+    @apply scale-[0.98];
+  }
+
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed hover:scale-100;
+  }
+
+  /* Premium Secondary Button */
+  .btn-secondary {
+    @apply px-4 py-2
+           bg-[#2A2A2A] border border-[#444444]
+           rounded-lg
+           text-[#B3B3B3] text-sm font-medium
+           transition-all duration-200
+           min-h-[44px]
+           touch-manipulation;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-[#333333] border-[#666666] text-white;
+  }
+
+  .btn-secondary:active {
+    @apply bg-[#2A2A2A];
+  }
+
+  /* Premium Input - Light fields on dark background */
+  .input-premium {
+    @apply w-full px-4 py-3
+           bg-[#F5F5F5] border border-[#E0E0E0]
+           rounded-lg
+           text-[#1A1A1A] placeholder-[#888888]
+           transition-all duration-200
+           min-h-[44px];
+  }
+
+  .input-premium:focus {
+    @apply outline-none border-[#FF6B00] ring-2 ring-[#FF6B00]/30 bg-white;
+  }
+
+  .input-premium:hover:not(:focus) {
+    @apply border-[#CCCCCC] bg-white;
+  }
+
+  /* Premium Textarea - Light fields on dark background */
+  .textarea-premium {
+    @apply w-full px-4 py-3
+           bg-[#F5F5F5] border border-[#E0E0E0]
+           rounded-lg
+           text-[#1A1A1A] placeholder-[#888888]
+           transition-all duration-200
+           resize-none;
+  }
+
+  .textarea-premium:focus {
+    @apply outline-none border-[#FF6B00] ring-2 ring-[#FF6B00]/30 bg-white;
+  }
+
+  .textarea-premium:hover:not(:focus) {
+    @apply border-[#CCCCCC] bg-white;
+  }
+
+  /* Display text for hero sections */
+  .text-display {
+    @apply text-3xl sm:text-4xl lg:text-5xl
+           font-black tracking-tight
+           leading-none;
+  }
+
+  /* Section headings */
+  .text-section {
+    @apply text-sm font-bold uppercase tracking-[0.15em]
+           text-[#999999];
+  }
+
+  /* Body text optimized for reading */
+  .text-body {
+    @apply text-base leading-relaxed text-[#E5E5E5];
+  }
+
+  /* Technical/monospace text */
+  .text-tech {
+    @apply font-mono text-sm text-[#FF6B00];
+  }
+
+  /* Premium Alert Boxes */
+  .alert-success {
+    @apply p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10
+           border border-green-500/30 rounded-xl backdrop-blur-sm;
+  }
+
+  .alert-warning {
+    @apply p-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10
+           border border-yellow-500/30 rounded-xl backdrop-blur-sm;
+  }
+
+  .alert-error {
+    @apply p-4 bg-gradient-to-r from-red-500/10 to-rose-500/10
+           border border-red-500/30 rounded-xl backdrop-blur-sm;
+  }
+
+  .alert-info {
+    @apply p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10
+           border border-blue-500/30 rounded-xl backdrop-blur-sm;
+  }
+
+  /* Animated shine effect for CTAs */
+  @keyframes shine {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transition: left 0.7s;
+  }
+
+  .btn-shine:hover::before {
+    left: 100%;
+  }
+
+  /* Premium page header */
+  .page-header {
+    @apply relative bg-gradient-to-r from-[#111111] via-[#1E1E1E] to-[#111111]
+           border-b border-[#444444]/50;
+  }
+
+  .page-header::before {
+    content: '';
+    @apply absolute inset-0;
+    background: radial-gradient(circle at top left, rgba(255, 107, 0, 0.08), transparent 60%);
+  }
+
+  /* Premium back button */
+  .btn-back {
+    @apply flex items-center gap-2 px-3 py-2
+           bg-[#2A2A2A] border border-[#444444] rounded-lg
+           transition-all duration-200
+           min-h-[44px] min-w-[44px];
+  }
+
+  .btn-back:hover {
+    @apply border-[#FF6B00] bg-[#333333];
+  }
 }
 
+@layer utilities {
+  /* Text gradient utilities */
+  .text-gradient-orange {
+    @apply bg-gradient-to-r from-[#FF6B00] via-[#FF8533] to-[#FF6B00]
+           bg-clip-text text-transparent;
+  }
+
+  .text-gradient-white {
+    @apply bg-gradient-to-r from-white via-[#E5E5E5] to-[#999999]
+           bg-clip-text text-transparent;
+  }
+
+  /* Safe area utilities for notched devices */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Thumb-friendly layout utility */
+  .thumb-zone {
+    @apply mb-24;
+  }
+
+  /* GPU acceleration for animations */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Glow effects */
+  .glow-orange {
+    box-shadow: 0 0 20px -5px rgba(255, 107, 0, 0.3);
+  }
+
+  .glow-orange-strong {
+    box-shadow: 0 0 30px -5px rgba(255, 107, 0, 0.5);
+  }
+}

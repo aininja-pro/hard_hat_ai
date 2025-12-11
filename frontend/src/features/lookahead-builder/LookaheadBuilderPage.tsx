@@ -1,5 +1,5 @@
 /**
- * Lookahead Builder Page
+ * Lookahead Builder Page - Premium Industrial Design
  * Generate 2-week construction schedules from photos or text input
  */
 
@@ -12,8 +12,8 @@ import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { ScheduleTable } from '../../components/ScheduleTable'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel, exportToClipboard } from '../../utils/exportSchedule'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../utils/apiConfig'
+import { ChevronLeft, Copy, FileSpreadsheet } from 'lucide-react'
 
 export default function LookaheadBuilderPage() {
   const navigate = useNavigate()
@@ -49,19 +49,19 @@ export default function LookaheadBuilderPage() {
 
     // Create FormData
     const formData = new FormData()
-    
+
     // Append all images
     selectedImages.forEach((image) => {
       formData.append('image_files', image)
     })
-    
+
     // Append required user goal
     formData.append('user_goal', userGoal.trim())
-    
+
     if (tradeScope.trim()) {
       formData.append('trade_scope', tradeScope.trim())
     }
-    
+
     if (constraints.trim()) {
       formData.append('constraints', constraints.trim())
     }
@@ -95,19 +95,27 @@ export default function LookaheadBuilderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Header - Premium Industrial */}
+      <header className="page-header">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#FF6B0008,transparent_60%)]" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              {/* Premium back button */}
               <button
                 onClick={() => navigate('/dashboard')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="group btn-back"
+                aria-label="Back to dashboard"
               >
-                ← Back
+                <ChevronLeft className="w-4 h-4 text-[#666666] group-hover:text-[#FF6B00] group-hover:-translate-x-1 transition-all" />
+                <span className="text-[#999999] text-sm font-medium group-hover:text-white hidden sm:inline">
+                  Back
+                </span>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+
+              {/* Page title with gradient */}
+              <h1 className="text-xl sm:text-2xl font-bold tracking-wide uppercase text-gradient-white truncate">
                 Lookahead Builder
               </h1>
             </div>
@@ -120,28 +128,28 @@ export default function LookaheadBuilderPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Input Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+          <div className="card-premium p-6">
+            <h2 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">
               Upload Photos & Describe Your Goal
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-[#999999] mb-4">
               Upload construction site photos and describe what you're trying to accomplish to generate a 2-week lookahead schedule.
             </p>
 
             {/* User Goal - Required */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                What are you trying to accomplish? <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                What are you trying to accomplish? <span className="text-[#FF6B00]">*</span>
               </label>
               <textarea
                 value={userGoal}
                 onChange={(e) => setUserGoal(e.target.value)}
                 placeholder="Describe your goal... (e.g., 'Complete rough-in for this bathroom and get it ready for drywall', 'Finish all electrical work in this office suite', 'Get this space ready for final inspection')"
-                className="w-full h-24 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="textarea-premium h-24"
                 disabled={isLoading}
                 required
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-[#666666]">
                 This helps the AI understand your specific goal and generate a more accurate schedule
               </p>
             </div>
@@ -154,7 +162,7 @@ export default function LookaheadBuilderPage() {
                 disabled={isLoading}
                 maxImages={5}
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-[#666666]">
                 Upload multiple photos from different angles for better analysis
               </p>
             </div>
@@ -162,28 +170,28 @@ export default function LookaheadBuilderPage() {
             {/* Additional Context */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Trade/Scope (Optional)
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  Trade/Scope <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={tradeScope}
                   onChange={(e) => setTradeScope(e.target.value)}
                   placeholder="e.g., 'all trades', 'electrical only'"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Constraints (Optional)
+                <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                  Constraints <span className="text-[#666666] normal-case">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={constraints}
                   onChange={(e) => setConstraints(e.target.value)}
                   placeholder="e.g., 'Inspection Thursday', 'Materials arrive Monday'"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="input-premium"
                   disabled={isLoading}
                 />
               </div>
@@ -192,7 +200,7 @@ export default function LookaheadBuilderPage() {
             <button
               onClick={handleGenerate}
               disabled={isLoading || selectedImages.length === 0 || !userGoal.trim()}
-              className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary btn-shine"
             >
               {isLoading ? 'Generating Schedule...' : 'Generate Schedule'}
             </button>
@@ -200,10 +208,10 @@ export default function LookaheadBuilderPage() {
 
           {/* Output Section */}
           {(summary || scheduleData || isLoading || error) && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="card-premium p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-semibold text-white uppercase tracking-wide">
                     Schedule Results
                   </h2>
                   <ProgressIndicator
@@ -216,37 +224,39 @@ export default function LookaheadBuilderPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={handleExportClipboard}
-                      className="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                      className="btn-secondary flex items-center gap-2"
                     >
-                      Copy
+                      <Copy className="w-4 h-4" />
+                      <span className="hidden sm:inline">Copy</span>
                     </button>
                     <button
                       onClick={handleExportExcel}
-                      className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg text-white text-sm font-medium shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 touch-manipulation"
                     >
-                      Export Excel
+                      <FileSpreadsheet className="w-4 h-4" />
+                      <span className="hidden sm:inline">Export Excel</span>
                     </button>
                   </div>
                 )}
               </div>
 
               {error && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 mb-4">
-                  {error}
+                <div className="alert-error mb-4">
+                  <p className="text-red-400">{error}</p>
                 </div>
               )}
 
               {/* Image Analysis */}
               {scheduleData?.image_analysis && (
-                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                  <h3 className="text-md font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl">
+                  <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-3">
                     Image Analysis
                   </h3>
-                  <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
-                    <p><strong>Space Type:</strong> {scheduleData.image_analysis.space_type}</p>
-                    <p><strong>Dimensions:</strong> {scheduleData.image_analysis.estimated_dimensions}</p>
-                    <p><strong>Current Phase:</strong> {scheduleData.image_analysis.current_phase}</p>
-                    <p><strong>Trades:</strong> {scheduleData.image_analysis.trades_identified.join(', ')}</p>
+                  <div className="text-sm text-[#E5E5E5] space-y-1">
+                    <p><span className="text-[#999999]">Space Type:</span> {scheduleData.image_analysis.space_type}</p>
+                    <p><span className="text-[#999999]">Dimensions:</span> {scheduleData.image_analysis.estimated_dimensions}</p>
+                    <p><span className="text-[#999999]">Current Phase:</span> {scheduleData.image_analysis.current_phase}</p>
+                    <p><span className="text-[#999999]">Trades:</span> {scheduleData.image_analysis.trades_identified.join(', ')}</p>
                   </div>
                 </div>
               )}
@@ -254,19 +264,17 @@ export default function LookaheadBuilderPage() {
               {/* Summary/Streaming - Only show if we don't have structured data yet */}
               {summary && !scheduleData && (
                 <div className="mb-6">
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-3">
                     Analysis
                   </h3>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <StreamingResponse text={summary} isLoading={isLoading} />
-                  </div>
+                  <StreamingResponse text={summary} isLoading={isLoading} />
                 </div>
               )}
 
               {/* Schedule Table */}
               {scheduleData && scheduleData.schedule.length > 0 && (
                 <div className="mb-6">
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-4">
                     2-Week Schedule ({scheduleData.schedule.length} items)
                   </h3>
                   <ScheduleTable items={scheduleData.schedule} />
@@ -277,11 +285,11 @@ export default function LookaheadBuilderPage() {
               {scheduleData && (
                 <div className="space-y-4">
                   {scheduleData.assumptions.length > 0 && (
-                    <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                      <h3 className="text-sm font-semibold text-yellow-900 dark:text-yellow-200 mb-2">
+                    <div className="alert-warning">
+                      <h3 className="text-sm font-semibold text-yellow-400 uppercase tracking-wider mb-2">
                         Assumptions Made
                       </h3>
-                      <ul className="text-sm text-yellow-800 dark:text-yellow-300 list-disc list-inside space-y-1">
+                      <ul className="text-sm text-yellow-300/80 list-disc list-inside space-y-1">
                         {scheduleData.assumptions.map((assumption, index) => (
                           <li key={index}>{assumption}</li>
                         ))}
@@ -290,11 +298,11 @@ export default function LookaheadBuilderPage() {
                   )}
 
                   {scheduleData.verify_with_foreman.length > 0 && (
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                      <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-200 mb-2">
+                    <div className="alert-info">
+                      <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-2">
                         Questions to Verify
                       </h3>
-                      <ul className="text-sm text-blue-800 dark:text-blue-300 list-disc list-inside space-y-1">
+                      <ul className="text-sm text-blue-300/80 list-disc list-inside space-y-1">
                         {scheduleData.verify_with_foreman.map((question, index) => (
                           <li key={index}>{question}</li>
                         ))}
@@ -303,11 +311,11 @@ export default function LookaheadBuilderPage() {
                   )}
 
                   {scheduleData.warnings.length > 0 && (
-                    <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                      <h3 className="text-sm font-semibold text-red-900 dark:text-red-200 mb-2">
+                    <div className="alert-error">
+                      <h3 className="text-sm font-semibold text-red-400 uppercase tracking-wider mb-2">
                         Warnings
                       </h3>
-                      <ul className="text-sm text-red-800 dark:text-red-300 list-disc list-inside space-y-1">
+                      <ul className="text-sm text-red-300/80 list-disc list-inside space-y-1">
                         {scheduleData.warnings.map((warning, index) => (
                           <li key={index}>{warning}</li>
                         ))}
@@ -316,11 +324,11 @@ export default function LookaheadBuilderPage() {
                   )}
 
                   {scheduleData.confidence_explanation && (
-                    <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    <div className="p-4 bg-[#1A1A1A] border border-[#333333] rounded-xl">
+                      <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-2">
                         Confidence: {scheduleData.confidence_level}
                       </h3>
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                      <p className="text-sm text-[#B3B3B3]">
                         {scheduleData.confidence_explanation}
                       </p>
                     </div>
@@ -334,4 +342,3 @@ export default function LookaheadBuilderPage() {
     </div>
   )
 }
-

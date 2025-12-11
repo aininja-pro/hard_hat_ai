@@ -36,7 +36,7 @@ export function ToneSelector({
 }: ToneSelectorProps) {
   return (
     <div className={`space-y-2 ${className}`}>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider">
         Tone
       </label>
       <div className="flex gap-2 flex-wrap">
@@ -44,10 +44,10 @@ export function ToneSelector({
           <button
             key={option.value}
             onClick={() => onToneChange(option.value)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 min-h-[44px] ${
               selectedTone === option.value
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                ? 'bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-black shadow-lg shadow-[#FF6B00]/25'
+                : 'bg-[#2A2A2A] border border-[#444444] text-[#B3B3B3] hover:bg-[#333333] hover:border-[#666666] hover:text-white'
             }`}
             aria-label={`Select ${option.label} tone: ${option.description}`}
           >
@@ -55,7 +55,7 @@ export function ToneSelector({
           </button>
         ))}
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p className="text-xs text-[#666666]">
         {toneOptions.find((o) => o.value === selectedTone)?.description}
       </p>
     </div>

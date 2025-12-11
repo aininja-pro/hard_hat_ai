@@ -1,126 +1,127 @@
 /**
- * Dashboard Page
- * Main landing page with agent cards and mode toggle
+ * Dashboard Page - Industrial Premium Design
+ * Dark theme with safety orange accents
  */
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
 import { LiabilityModal } from '../components/LiabilityModal'
-import { ModeToggle } from '../components/ModeToggle'
 import { AgentCard } from '../components/AgentCard'
-import { AppLogo } from '../components/AppLogo'
 import { getThemeConfig, applyThemeColors } from '../utils/themeConfig'
+import {
+  PenLine,
+  CalendarDays,
+  FileSearch,
+  ShieldAlert,
+  GitCompare,
+  X,
+} from 'lucide-react'
 
-// Agent data - will be moved to config later
+// Agent data with monoline icons (single color)
 const AGENTS = [
   {
     id: 'site-scribe',
     title: 'Site Scribe',
     description: 'Transform voice or text notes into professional emails',
-    icon: '✍️',
+    icon: <PenLine className="w-full h-full" strokeWidth={1.5} />,
   },
   {
     id: 'lookahead-builder',
     title: 'Lookahead Builder',
-    description: 'Generate 2-week construction schedules from photos or text',
-    icon: '📅',
+    description: 'Generate 2-week schedules from photos or text',
+    icon: <CalendarDays className="w-full h-full" strokeWidth={1.5} />,
   },
   {
     id: 'code-commander',
     title: 'Code & Spec Commander',
-    description: 'Answer questions about technical documents with citations',
-    icon: '📋',
+    description: 'Search technical docs with citations',
+    icon: <FileSearch className="w-full h-full" strokeWidth={1.5} />,
   },
   {
     id: 'contract-hawk',
     title: 'Contract Hawk',
-    description: 'Analyze contracts for risks and liability issues',
-    icon: '🦅',
+    description: 'Analyze contracts for risks and liability',
+    icon: <ShieldAlert className="w-full h-full" strokeWidth={1.5} />,
   },
   {
     id: 'submittal-scrubber',
     title: 'Submittal Scrubber',
-    description: 'Compare product specs to requirements for compliance',
-    icon: '🔍',
+    description: 'Compare product specs for compliance',
+    icon: <GitCompare className="w-full h-full" strokeWidth={1.5} />,
   },
 ]
 
 function DashboardContent() {
   const navigate = useNavigate()
   const { user, signOut } = useAuth()
-  const { mode } = useTheme()
   const [liabilityAcknowledged, setLiabilityAcknowledged] = useState(false)
 
-  // Apply white-label theme colors on mount
   useEffect(() => {
     const config = getThemeConfig()
     applyThemeColors(config)
-    // Update document title
     document.title = config.productName
   }, [])
 
   const handleAgentClick = (agentId: string) => {
-    // Navigate to agent workspace
-    if (agentId === 'site-scribe') {
-      navigate('/agent/site-scribe')
-    } else if (agentId === 'code-commander') {
-      navigate('/agent/code-commander')
-    } else if (agentId === 'contract-hawk') {
-      navigate('/agent/contract-hawk')
-    } else if (agentId === 'submittal-scrubber') {
-      navigate('/agent/submittal-scrubber')
-    } else if (agentId === 'lookahead-builder') {
-      navigate('/agent/lookahead-builder')
-    } else {
-      // Other agents coming soon
-      alert(`${agentId} workspace coming soon!`)
-    }
+    navigate(`/agent/${agentId}`)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Header - Dark Industrial */}
+      <header className="bg-[#111111] border-b border-[#444444]">
+        <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <AppLogo />
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {user?.email}
-              </span>
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              {/* Hard Hat Icon */}
+              <div className="text-[#FF6B00]">
+                <svg width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="8" width="28" height="12" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <rect x="0" y="18" width="32" height="4" rx="1" fill="currentColor"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-white font-bold text-sm tracking-wider">HARD HAT</div>
+                <div className="text-[#666666] text-xs tracking-wider">AI PACK</div>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <ModeToggle />
-              <button
-                onClick={signOut}
-                className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              >
-                Sign Out
-              </button>
-            </div>
+
+            {/* Sign out */}
+            <button
+              onClick={signOut}
+              className="p-2 text-[#666666] hover:text-white transition-colors"
+              aria-label="Sign out"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-3xl mx-auto px-4 py-8">
         {!liabilityAcknowledged && (
           <LiabilityModal onAcknowledge={() => setLiabilityAcknowledged(true)} />
         )}
 
+        {/* Section Header - Premium */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Choose an AI Agent
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Select an agent to help with your construction tasks
-          </p>
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent" />
+            <h2 className="text-white font-bold text-sm tracking-[0.2em] uppercase">
+              Your Tools
+            </h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent" />
+          </div>
+          <div className="flex justify-center mt-3">
+            <div className="h-1 w-24 bg-gradient-to-r from-[#FF6B00] via-[#FF8533] to-[#FF6B00] rounded-full shadow-lg shadow-[#FF6B00]/50" />
+          </div>
         </div>
 
-        {/* Agent Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Agent Cards */}
+        <div className="space-y-3">
           {AGENTS.map((agent) => (
             <AgentCard
               key={agent.id}
@@ -132,16 +133,18 @@ function DashboardContent() {
             />
           ))}
         </div>
+
+        {/* User email - subtle footer */}
+        <div className="mt-8 text-center">
+          <span className="text-[#666666] text-xs">
+            {user?.email}
+          </span>
+        </div>
       </main>
     </div>
   )
 }
 
 export default function Dashboard() {
-  return (
-    <ThemeProvider>
-      <DashboardContent />
-    </ThemeProvider>
-  )
+  return <DashboardContent />
 }
-

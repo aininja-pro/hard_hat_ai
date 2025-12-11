@@ -1,5 +1,5 @@
 /**
- * Submittal Scrubber Page
+ * Submittal Scrubber Page - Premium Industrial Design
  * Compare specification documents with product data for compliance
  */
 
@@ -12,8 +12,8 @@ import { ConfidenceBadge } from '../../components/ConfidenceBadge'
 import { ComplianceTable } from '../../components/ComplianceTable'
 import { ProgressIndicator } from '../../components/ProgressIndicator'
 import { exportToExcel } from '../../utils/exportComplianceTable'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../../utils/apiConfig'
+import { ChevronLeft, FileSpreadsheet } from 'lucide-react'
 
 export default function SubmittalScrubberPage() {
   const navigate = useNavigate()
@@ -75,19 +75,27 @@ export default function SubmittalScrubberPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[#111111]">
+      {/* Header - Premium Industrial */}
+      <header className="page-header">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_#FF6B0008,transparent_60%)]" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-4 min-w-0 flex-1">
+              {/* Premium back button */}
               <button
                 onClick={() => navigate('/dashboard')}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="group btn-back"
+                aria-label="Back to dashboard"
               >
-                ← Back
+                <ChevronLeft className="w-4 h-4 text-[#666666] group-hover:text-[#FF6B00] group-hover:-translate-x-1 transition-all" />
+                <span className="text-[#999999] text-sm font-medium group-hover:text-white hidden sm:inline">
+                  Back
+                </span>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+
+              {/* Page title with gradient */}
+              <h1 className="text-xl sm:text-2xl font-bold tracking-wide uppercase text-gradient-white truncate">
                 Submittal Scrubber
               </h1>
             </div>
@@ -100,11 +108,11 @@ export default function SubmittalScrubberPage() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Input Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+          <div className="card-premium p-6">
+            <h2 className="text-lg font-semibold mb-4 text-white uppercase tracking-wide">
               Upload Documents for Compliance Comparison
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-[#999999] mb-4">
               Upload a specification document and product data document to check compliance.
             </p>
             <DualFileUpload
@@ -117,25 +125,25 @@ export default function SubmittalScrubberPage() {
               disabled={isLoading}
             />
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Model Number (Optional)
+              <label className="block text-sm font-medium text-[#999999] uppercase tracking-wider mb-2">
+                Model Number <span className="text-[#666666] normal-case">(optional)</span>
               </label>
               <input
                 type="text"
                 value={modelNumber}
                 onChange={(e) => setModelNumber(e.target.value)}
                 placeholder="e.g., Model XYZ-1234 (if product data has multiple models)"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                className="input-premium"
                 disabled={isLoading}
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-1 text-xs text-[#666666]">
                 Specify a model number if the product data contains multiple models in tables
               </p>
             </div>
             <button
               onClick={handleCompare}
               disabled={isLoading || !specFile || !productFile}
-              className="w-full mt-4 py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary btn-shine mt-4"
             >
               {isLoading ? 'Comparing Documents...' : 'Compare Documents'}
             </button>
@@ -143,10 +151,10 @@ export default function SubmittalScrubberPage() {
 
           {/* Output Section */}
           {(summary || complianceItems.length > 0 || isLoading || error) && (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <div className="flex items-center justify-between mb-4">
+            <div className="card-premium p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 className="text-lg font-semibold text-white uppercase tracking-wide">
                     Compliance Analysis Results
                   </h2>
                   <ProgressIndicator
@@ -158,35 +166,34 @@ export default function SubmittalScrubberPage() {
                 {complianceItems.length > 0 && (
                   <button
                     onClick={handleExportExcel}
-                    className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg text-white text-sm font-medium shadow-lg shadow-green-600/20 hover:shadow-xl hover:shadow-green-600/30 hover:scale-[1.02] active:scale-95 transition-all duration-200 touch-manipulation"
                   >
-                    Export Excel
+                    <FileSpreadsheet className="w-4 h-4" />
+                    <span className="hidden sm:inline">Export Excel</span>
                   </button>
                 )}
               </div>
 
               {error && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200 mb-4">
-                  {error}
+                <div className="alert-error mb-4">
+                  <p className="text-red-400">{error}</p>
                 </div>
               )}
 
               {/* Summary */}
               {summary && (
                 <div className="mb-6">
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-3">
                     Summary
                   </h3>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <StreamingResponse text={summary} isLoading={isLoading} />
-                  </div>
+                  <StreamingResponse text={summary} isLoading={isLoading} />
                 </div>
               )}
 
               {/* Compliance Table */}
               {complianceItems.length > 0 && (
                 <div>
-                  <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
+                  <h3 className="text-sm font-semibold text-[#999999] uppercase tracking-wider mb-4">
                     Compliance Items ({complianceItems.length})
                   </h3>
                   <ComplianceTable items={complianceItems} />
@@ -194,7 +201,7 @@ export default function SubmittalScrubberPage() {
               )}
 
               {!isLoading && summary && complianceItems.length === 0 && (
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <div className="text-center py-8 text-[#666666]">
                   No compliance items found. Review the summary above.
                 </div>
               )}
@@ -205,4 +212,3 @@ export default function SubmittalScrubberPage() {
     </div>
   )
 }
-
