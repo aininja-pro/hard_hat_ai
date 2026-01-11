@@ -16,9 +16,8 @@ class ClaudeClient:
 
     def __init__(self):
         self.client = anthropic_client
-        # Using Claude 3 Opus (works with current API key)
-        # Note: If you have access to Claude 3.5 Sonnet, you can change this to "claude-3-5-sonnet-20240620"
-        self.model = "claude-3-opus-20240229"
+        # Using Claude Sonnet 4 (latest model)
+        self.model = "claude-sonnet-4-20250514"
         self.max_retries = 3
         self.base_delay = 1.0  # Start with 1 second delay
 

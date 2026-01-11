@@ -28,7 +28,7 @@ class VisionClient:
             raise ValueError("ANTHROPIC_API_KEY environment variable is not set")
         
         self.client = Anthropic(api_key=api_key)
-        self.model = "claude-3-opus-20240229"  # Claude 3 Opus supports vision
+        self.model = "claude-sonnet-4-20250514"  # Claude Sonnet 4 supports vision
 
     def compress_image(self, image_path: str) -> str:
         """
