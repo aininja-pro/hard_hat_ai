@@ -31,8 +31,7 @@ export default function AuthCallback() {
           setLoading(false)
         }
       } catch (err) {
-        console.error('Auth callback error:', err)
-        setError('Authentication failed. Please try again.')
+        setError(`Authentication failed: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again.`)
         setLoading(false)
       }
     }

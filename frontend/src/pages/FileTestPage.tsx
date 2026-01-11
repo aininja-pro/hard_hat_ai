@@ -6,8 +6,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FileUpload } from '../components/FileUpload'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+import { API_URL } from '../utils/apiConfig'
 
 export default function FileTestPage() {
   const navigate = useNavigate()

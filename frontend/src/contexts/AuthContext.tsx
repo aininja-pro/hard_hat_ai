@@ -48,13 +48,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    * Sends a magic-link email to the user
    */
   const signIn = async (email: string) => {
+    // Use current origin (works for both localhost and IP address)
+    // IMPORTANT: Must include the full path /auth/callback
+    const redirectUrl = `${window.location.origin}/auth/callback`
+    
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         // Magic-link will be valid for 1 hour
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        // CRITICAL: Must match exactly what's in Supabase redirect URLs list
+        emailRedirectTo: redirectUrl,
       },
     })
+
     return { error }
   }
 
