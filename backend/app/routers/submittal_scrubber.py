@@ -12,6 +12,9 @@ from app.utils.file_cleanup import TemporaryFile
 from app.models.submittal_scrubber import ComplianceItem
 import json
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/submittal-scrubber", tags=["submittal-scrubber"])
 claude_client = ClaudeClient()
@@ -66,7 +69,7 @@ ANALYSIS INSTRUCTIONS:
 8. Focus on technical requirements, not marketing language
 9. If a value exists in a product data table but you initially missed it, re-check and update your assessment
 
-CRITICAL: Your response must be ONLY valid JSON. Do not include any explanatory text before or after the JSON. Start your response with {{ and end with }}.
+CRITICAL: Your response must be ONLY valid JSON. Do not include any explanatory text before or after the JSON. Start your response with {{ and end with }}. Keep responses concise - focus on the most important compliance items. If you run out of tokens, ensure the JSON is properly closed with }}.
 
 Format your response as JSON with this structure:
 {{
@@ -97,10 +100,10 @@ Format your response as JSON with this structure:
 }}
 
 Specification Document ({spec_pages} pages):
-{spec_text[:40000]}  # Limit to ~40k chars per document
+{spec_text[:35000]}  # Limit to ~35k chars per document to leave room for response
 
 Product Data Document ({product_pages} pages):
-{product_text[:40000]}  # Limit to ~40k chars per document
+{product_text[:35000]}  # Limit to ~35k chars per document to leave room for response
 
 Compare these documents systematically. Extract requirements from the spec, find corresponding information in the product data, and provide compliance analysis. Return ONLY valid JSON starting with {{ and ending with }}:"""
 
@@ -123,11 +126,69 @@ def parse_compliance_response(response_text: str) -> dict:
         if json_match:
             json_str = json_match.group(1)
         else:
-            # Strategy 2: Find JSON object that contains "compliance_items"
-            # Use greedy matching to get the complete JSON object
-            json_match = re.search(r'(\{.*?"compliance_items".*?\})', response_text, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(1)
+            # Strategy 2: Find JSON object that contains "compliance_items" by properly matching braces
+            # First, find where "compliance_items" appears
+            compliance_idx = response_text.find('"compliance_items"')
+            if compliance_idx != -1:
+                # Find the opening brace before "compliance_items"
+                brace_start = response_text.rfind('{', 0, compliance_idx)
+                if brace_start != -1:
+                    # Find matching closing brace by counting braces
+                    brace_count = 0
+                    brace_end = brace_start
+                    for i in range(brace_start, len(response_text)):
+                        if response_text[i] == '{':
+                            brace_count += 1
+                        elif response_text[i] == '}':
+                            brace_count -= 1
+                            if brace_count == 0:
+                                brace_end = i + 1
+                                break
+                    if brace_end > brace_start:
+                        json_str = response_text[brace_start:brace_end]
+                    else:
+                        # If we couldn't find matching brace, try to find the last complete JSON object
+                        # Look for the last complete closing brace
+                        last_brace = response_text.rfind('}')
+                        if last_brace != -1:
+                            # Work backwards to find the matching opening brace
+                            brace_count = 0
+                            brace_start = last_brace
+                            for i in range(last_brace, -1, -1):
+                                if response_text[i] == '}':
+                                    brace_count += 1
+                                elif response_text[i] == '{':
+                                    brace_count -= 1
+                                    if brace_count == 0:
+                                        brace_start = i
+                                        break
+                            if brace_start < last_brace:
+                                json_str = response_text[brace_start:last_brace + 1]
+                            else:
+                                json_str = response_text[brace_start:]
+                        else:
+                            json_str = response_text[brace_start:]
+                else:
+                    # No opening brace found, try Strategy 3
+                    brace_start = response_text.find('{')
+                    if brace_start != -1:
+                        # Find matching closing brace by counting braces
+                        brace_count = 0
+                        brace_end = brace_start
+                        for i in range(brace_start, len(response_text)):
+                            if response_text[i] == '{':
+                                brace_count += 1
+                            elif response_text[i] == '}':
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    brace_end = i + 1
+                                    break
+                        if brace_end > brace_start:
+                            json_str = response_text[brace_start:brace_end]
+                        else:
+                            json_str = response_text[brace_start:]
+                    else:
+                        json_str = response_text
             else:
                 # Strategy 3: Find JSON object by matching braces properly
                 # Find the first opening brace
@@ -147,32 +208,8 @@ def parse_compliance_response(response_text: str) -> dict:
                     if brace_end > brace_start:
                         json_str = response_text[brace_start:brace_end]
                     else:
-                        # If we couldn't find matching brace, try to find JSON with "compliance_items"
-                        # Look for opening brace before "compliance_items"
-                        compliance_idx = response_text.find('"compliance_items"')
-                        if compliance_idx != -1:
-                            # Find opening brace before this
-                            brace_start = response_text.rfind('{', 0, compliance_idx)
-                            if brace_start != -1:
-                                # Try to find matching closing brace
-                                brace_count = 0
-                                brace_end = brace_start
-                                for i in range(brace_start, len(response_text)):
-                                    if response_text[i] == '{':
-                                        brace_count += 1
-                                    elif response_text[i] == '}':
-                                        brace_count -= 1
-                                        if brace_count == 0:
-                                            brace_end = i + 1
-                                            break
-                                if brace_end > brace_start:
-                                    json_str = response_text[brace_start:brace_end]
-                                else:
-                                    json_str = response_text[brace_start:]
-                            else:
-                                json_str = response_text
-                        else:
-                            json_str = response_text
+                        # Fallback: try to parse the whole response
+                        json_str = response_text
                 else:
                     # Fallback: try to parse the whole response
                     json_str = response_text
@@ -212,11 +249,73 @@ def parse_compliance_response(response_text: str) -> dict:
             "success": True
         }
     
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
         # If JSON parsing fails, try to extract information manually
+        logger.error(f"JSON parsing error: {str(e)}")
+        logger.error(f"Attempted to parse (first 500 chars): {json_str[:500] if 'json_str' in locals() else 'N/A'}...")
+        logger.error(f"Full response length: {len(response_text)}")
+        
+        # Try to extract partial data if possible
+        try:
+            # Look for any valid JSON structure we can salvage
+            if '"compliance_items"' in response_text:
+                # Try to extract items manually using a more robust approach
+                # Find the start of the compliance_items array
+                items_start = response_text.find('"compliance_items"')
+                if items_start != -1:
+                    # Find the opening bracket after compliance_items
+                    bracket_start = response_text.find('[', items_start)
+                    if bracket_start != -1:
+                        # Count brackets to find the matching closing bracket
+                        bracket_count = 0
+                        bracket_end = bracket_start
+                        for i in range(bracket_start, len(response_text)):
+                            if response_text[i] == '[':
+                                bracket_count += 1
+                            elif response_text[i] == ']':
+                                bracket_count -= 1
+                                if bracket_count == 0:
+                                    bracket_end = i + 1
+                                    break
+                        if bracket_end > bracket_start:
+                            # Try to parse just the array
+                            items_str = response_text[bracket_start:bracket_end]
+                            # Try to fix common JSON issues
+                            items_str = items_str.replace('\n', ' ').replace('\r', ' ')
+                            # Remove trailing commas before closing brackets/braces
+                            items_str = re.sub(r',\s*\]', ']', items_str)
+                            items_str = re.sub(r',\s*}', '}', items_str)
+                            try:
+                                items = json.loads(items_str)
+                                if isinstance(items, list) and len(items) > 0:
+                                    # Process items
+                                    compliance_items = []
+                                    for item in items:
+                                        if isinstance(item, dict) and "requirement" in item:
+                                            status = item.get("status", "warn").lower()
+                                            if status not in ["pass", "warn", "fail"]:
+                                                status = "warn"
+                                            compliance_items.append({
+                                                "requirement": item.get("requirement", ""),
+                                                "spec_text": item.get("spec_text", ""),
+                                                "product_text": item.get("product_text", ""),
+                                                "status": status,
+                                                "notes": item.get("notes", "")
+                                            })
+                                    return {
+                                        "compliance_items": compliance_items,
+                                        "summary": f"Partially parsed response ({len(compliance_items)} items extracted). Some items may be missing due to incomplete JSON.",
+                                        "success": True,
+                                        "raw_response": response_text[:1000]
+                                    }
+                            except Exception as parse_err:
+                                logger.error(f"Failed to parse partial items: {str(parse_err)}")
+        except Exception as extract_err:
+            logger.error(f"Failed to extract partial data: {str(extract_err)}")
+        
         return {
             "compliance_items": [],
-            "summary": "Unable to parse structured response. Raw analysis: " + response_text[:500],
+            "summary": f"Unable to parse structured response. JSON Error: {str(e)}. Raw analysis (first 1000 chars): " + response_text[:1000],
             "success": False,
             "raw_response": response_text
         }
@@ -321,8 +420,8 @@ async def compare_submittals(
                         # Stream the AI response
                         for chunk in claude_client.stream_completion(
                             prompt=user_prompt,
-                            system_prompt="You are a construction submittal review expert. Compare specification documents with product data to determine compliance. Always respond in valid JSON format.",
-                            max_tokens=4096
+                            system_prompt="You are a construction submittal review expert. Compare specification documents with product data to determine compliance. Always respond in valid JSON format. Make sure your JSON is complete and properly closed. Be concise but thorough.",
+                            max_tokens=4096  # Maximum allowed for Claude 3 Opus
                         ):
                             full_response += chunk
                             # Send chunk as Server-Sent Event

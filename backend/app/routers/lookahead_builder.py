@@ -294,14 +294,14 @@ async def generate_schedule(
                 # Close file descriptor if write failed
                 try:
                     os.close(temp_fd)
-                except:
-                    pass
+                except Exception as close_err:
+                    logger.warning(f"Failed to close file descriptor: {close_err}")
                 # Clean up partial file
                 try:
                     if os.path.exists(temp_path):
                         os.unlink(temp_path)
-                except:
-                    pass
+                except Exception as unlink_err:
+                    logger.warning(f"Failed to clean up partial file {temp_path}: {unlink_err}")
                 raise HTTPException(status_code=500, detail=f"Error saving image {idx}: {str(e)}")
         
         # Build prompt with user goal and context
@@ -433,8 +433,8 @@ async def generate_schedule(
                 try:
                     if os.path.exists(temp_path):
                         os.unlink(temp_path)
-                except:
-                    pass
+                except Exception as cleanup_err:
+                    logger.warning(f"Failed to clean up {temp_path}: {cleanup_err}")
         raise HTTPException(
             status_code=500,
             detail=f"Error generating schedule: {str(e)}"

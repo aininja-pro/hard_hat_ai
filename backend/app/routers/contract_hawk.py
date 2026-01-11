@@ -12,6 +12,9 @@ from app.utils.file_cleanup import TemporaryFile
 from app.models.contract_hawk import RiskItem
 import json
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/contract-hawk", tags=["contract-hawk"])
 claude_client = ClaudeClient()
@@ -308,8 +311,6 @@ async def analyze_contract(file: UploadFile = File(...)):
                 )
             
             # Log document size for performance monitoring
-            import logging
-            logger = logging.getLogger(__name__)
             logger.info(f"Contract Hawk: Processing {total_pages} pages, {len(document_text)} characters")
             
             # Build prompt (with smart truncation if needed)
@@ -345,7 +346,7 @@ async def analyze_contract(file: UploadFile = File(...)):
                     from collections import deque
                     
                     # Queue for progress messages from background task
-                    progress_queue = deque()
+                    progress_queue = deque(maxlen=50)  # Bounded to prevent memory issues
                     streaming_complete = False
                     
                     # Background task to send progress updates at fixed intervals
