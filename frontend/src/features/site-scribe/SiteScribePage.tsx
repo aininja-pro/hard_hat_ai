@@ -19,7 +19,7 @@ import { ChevronLeft, Copy, Mail } from 'lucide-react'
 
 type Tone = 'neutral' | 'firm' | 'cya'
 
-import { API_URL } from '../../utils/apiConfig'
+import { getApiUrl } from '../../utils/apiConfig'
 
 export default function SiteScribePage() {
   const navigate = useNavigate()
@@ -42,7 +42,8 @@ export default function SiteScribePage() {
     }
 
     reset()
-    await streamResponse(`${API_URL}/api/site-scribe/transform`, {
+    const apiUrl = getApiUrl()
+    await streamResponse(`${apiUrl}/api/site-scribe/transform`, {
       text: inputText,
       tone,
       to_email: toEmail.trim() || undefined,

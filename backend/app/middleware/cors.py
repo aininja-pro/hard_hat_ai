@@ -8,19 +8,28 @@ from typing import List
 def get_cors_config() -> dict:
     """
     Get CORS configuration based on environment variables.
-    Defaults to allowing localhost and common local IP addresses for development.
+    Defaults to allowing all origins for development.
     """
-    # Get allowed origins from environment, default to localhost and common local IPs
-    default_origins = "http://localhost:3000,http://127.0.0.1:3000,http://192.168.1.81:3000"
-    allowed_origins_env = os.getenv("CORS_ORIGINS", default_origins)
-    allowed_origins: List[str] = [
-        origin.strip() for origin in allowed_origins_env.split(",")
-    ]
-    
+    # For development, allow all origins
+    # In production, set CORS_ORIGINS environment variable
+    allowed_origins_env = os.getenv("CORS_ORIGINS", "")
+
+    if allowed_origins_env:
+        allowed_origins: List[str] = [
+            origin.strip() for origin in allowed_origins_env.split(",")
+        ]
+        return {
+            "allow_origins": allowed_origins,
+            "allow_credentials": True,
+            "allow_methods": ["*"],
+            "allow_headers": ["*"],
+        }
+
+    # Development mode: allow all origins
     return {
-        "allow_origins": allowed_origins,
-        "allow_credentials": True,
-        "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_origins": ["*"],
+        "allow_credentials": False,  # Cannot use credentials with wildcard origin
+        "allow_methods": ["*"],
         "allow_headers": ["*"],
     }
 

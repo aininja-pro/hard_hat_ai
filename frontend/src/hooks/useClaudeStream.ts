@@ -48,7 +48,14 @@ export function useClaudeStream(): UseClaudeStreamReturn {
     setFoundInDocument(null)
 
     try {
-      const response = await fetch(url, {
+      // Fix URL for mobile - replace localhost with actual hostname
+      let finalUrl = url
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        finalUrl = url.replace('localhost:8000', `${window.location.hostname}:8000`)
+        finalUrl = finalUrl.replace('127.0.0.1:8000', `${window.location.hostname}:8000`)
+      }
+
+      const response = await fetch(finalUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,8 +63,12 @@ export function useClaudeStream(): UseClaudeStreamReturn {
         body: JSON.stringify(body),
       })
 
+      console.log('[useClaudeStream] Response status:', response.status)
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorText = await response.text()
+        console.error('[useClaudeStream] Error response:', errorText)
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`)
       }
 
       // Read the stream
@@ -107,7 +118,9 @@ export function useClaudeStream(): UseClaudeStreamReturn {
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
+      console.error('[useClaudeStream] Error:', errorMessage)
+      setError(errorMessage)
       setIsLoading(false)
     }
   }, [])
